@@ -226,7 +226,7 @@
 				startupInfo.workingDirectory = File.applicationStorageDirectory;
 				var processArgs:Vector.<String> = new Vector.<String>();	
 				
-				processArgs.push("-isync","-y","-i","tmpSound.wav", "-i","tmpVideo.flv","-vb","2000k","-f","flv", varSYSPlayer.varUserName + ".flv");
+				processArgs.push("-isync","-y","-i","tmpSound.wav", "-i","tmpVideo.flv","-vb","2000k","-vol","1024","-f","flv", varSYSPlayer.varUserName + ".flv");
 				
 				startupInfo.arguments = processArgs;
 				
