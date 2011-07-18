@@ -52,6 +52,7 @@
 					else if (this.varToState == "ORIGINAL_FILECONVERT")
 					{
 						prb.indeterminate = true;
+						prb.mode = "event";
 						labInfo.text = "正在转换视频...";
 						varSYSPlayer.convertMovie(varSYSPlayer.varChoseToConvertMovie);
 					}
