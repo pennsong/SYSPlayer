@@ -434,11 +434,11 @@
 			private function uploadFiles():void
 			{
 				
-				if (login.labIp.text != "")
+/* 				if (login.labIp.text != "")
 				{
 					serverSideScript = "http://" + login.labIp.text + "/~penn/test/upload_file.php";
 					trace(serverSideScript);
-				}
+				} */
 				transition.prb.indeterminate = false;
 				transition.prb.mode = "manual";
 				transition.labInfo.text = "正在上传视频...";
@@ -635,10 +635,10 @@
 				var htpAuth:HTTPService = new HTTPService();
 				htpAuth.requestTimeout = 5;
 				var tmpUrl:String = "http://channelwin.info/~penn/test/upload_auth.php";
-				if (login.labIp.text != "")
+/* 				if (login.labIp.text != "")
 				{
 					tmpUrl = "http://" + login.labIp.text + "/~penn/test/upload_auth.php";
-				}
+				} */
 				htpAuth.url = tmpUrl
 				htpAuth.method = "POST";
 				htpAuth.addEventListener(FaultEvent.FAULT, httpFault);

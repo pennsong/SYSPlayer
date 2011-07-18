@@ -3,6 +3,7 @@
 				   xmlns:s="library://ns.adobe.com/flex/spark"
 				   xmlns:mx="library://ns.adobe.com/flex/mx"
 				   width="322" height="281" backgroundColor="#000000" borderVisible="false"
+				   backgroundImage="@Embed(source='assets/loginBackground.png')"
 				   dropShadowVisible="true"
 				   creationComplete="init()">	
 	
@@ -75,17 +76,33 @@
 	<fx:Declarations>
 		<!-- Place non-visual elements (e.g., services, value objects) here -->
 	</fx:Declarations>
-	<s:Label styleName="commonColor big" text="登录"/>
-	<s:HGroup verticalAlign="middle">		
-		<s:Label styleName="commonColor middle" text="帐号:"/>
-		<s:TextInput id="txiAccount" text="@{varSYSPlayer.varUserName}"/>
-	</s:HGroup>
-	<s:HGroup verticalAlign="middle">	
-		<s:Label styleName="commonColor middle" text="密码:"/>
-		<s:TextInput id="txiPassword" displayAsPassword="true"  text="@{varSYSPlayer.varPassword}"/>
-	</s:HGroup>	
-	<s:Label id="labInfo" styleName="commonColor small warningColor" text="{varInfo}"/>
-	<s:Button id="btnLogin" styleName="login" label="登录" click="btnLogin_clickHandler(event)"/>
-	<s:Label color="#FFFFFF" text="2011/07/12_15:26"/>
-	<s:TextInput id="labIp" borderVisible="false" color="#FFFFFF" contentBackgroundColor="#000000"/>
+	<!--<s:Label styleName="commonColor big" text="登录"/>-->
+	<s:BorderContainer height="50%" backgroundAlpha="0" borderVisible="false">
+		
+	</s:BorderContainer>
+	<s:BorderContainer  backgroundAlpha="0" borderVisible="false">
+		
+		<s:layout>
+			<s:VerticalLayout
+				horizontalAlign="center"
+				verticalAlign="middle"
+				gap="2"/>
+		</s:layout>
+		<s:HGroup verticalAlign="middle">		
+			<s:Label styleName="warningColor small" text="帐号:"/>
+			<s:TextInput id="txiAccount" y="-3" width="72" height="19" borderColor="#FF0000"
+						 text="@{varSYSPlayer.varUserName}"/>
+		</s:HGroup>
+		<s:Label styleName="warningColor small" text="请您输入&quot;视一视&quot;注册帐号"/>
+		<s:HGroup verticalAlign="middle">	
+			<s:Label styleName="warningColor small" text="密码:"/>
+			<s:TextInput id="txiPassword" width="72" height="19" borderColor="#FF0000"
+						 displayAsPassword="true" text="@{varSYSPlayer.varPassword}"/>
+		</s:HGroup>	
+		<s:Label styleName="warningColor small" text="请您输入&quot;视一视&quot;注册密码"/>
+		<s:Label id="labInfo" styleName="commonColor small warningColor" text="{varInfo}"/>
+		<s:Button id="btnLogin" styleName="login" label="登录" click="btnLogin_clickHandler(event)"/>
+		<s:Label color="#FFFFFF" text="version:2011/07/12_15:26"/>
+		<!--<s:TextInput id="labIp" borderVisible="false" color="#FFFFFF" contentBackgroundColor="#000000"/>-->
+	</s:BorderContainer>
 </s:BorderContainer>
