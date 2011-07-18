@@ -3,7 +3,7 @@
 				   xmlns:s="library://ns.adobe.com/flex/spark"
 				   xmlns:mx="library://ns.adobe.com/flex/mx"
 				   xmlns:components="components.*"
-				   width="322" height="281" backgroundColor="#000000" borderVisible="false"
+				   width="322" height="281" backgroundColor="#75A8E7" borderVisible="false"
 				   dropShadowVisible="true"
 				   creationComplete="init()">	
 	
@@ -91,6 +91,10 @@
 				{
 					varSYSPlayer.browseFlvFile();
 				}
+				else if (e.strButton == "btnConvert")
+				{
+					varSYSPlayer.browseFileToConvert();
+				}
 			}
 			
 			private function resetShotcutButton():void
@@ -106,7 +110,7 @@
 					shtPlay.includeInLayout = false;
 					shtPlay.visible = false;
 				}
-				shtPhoto.includeInLayout = true;
+/* 				shtPhoto.includeInLayout = true; */
 				if (varSYSPlayer.varMovieByteArray != null)
 				{
 					shtUpload.includeInLayout = true;
@@ -123,6 +127,7 @@
 			public function resetControlButton():void
 			{
 				cbg.switchLogout(true);
+				cbg.switchConvert(true);
 				cbg.switchPhoto(true);
 				cbg.switchPause(false);
 				cbg.switchRecord(true);
@@ -175,8 +180,8 @@
 			</s:BorderContainer>
 			<s:HSlider id="hslPreviewPgb" buttonMode="true" maximum="{varSYSPlayer.varMovieDuration}" width="80" change="hslPreviewPgb_changeHandler(event)"/>
 			
-			<s:Label styleName="commonColor middle" text="所选照片"/>
-			<s:BorderContainer width="80" height="60" borderVisible="false">
+<!--			<s:Label styleName="commonColor middle" text="所选照片"/>-->
+			<s:BorderContainer width="80" height="60" borderVisible="false" visible="false" includeInLayout="false">
 				<s:Image id="imgPhotoPreview" width="80" height="60"/>
 				<s:Image id="imgPhotoPreviewEmpty" width="80" height="60" source="assets/emptyPhoto.png"/>
 			</s:BorderContainer>
@@ -205,7 +210,7 @@
 						   click="dispatchEvent(new ControlEvent('controlButton', 'btnPlay'))"/>
 				<s:Label styleName="commonColor middle" text="播放所选视频"/>
 			</s:HGroup>
-			<s:HGroup id="shtPhoto" verticalAlign="middle">				
+<!--			<s:HGroup id="shtPhoto" verticalAlign="middle">				
 				<mx:Button label="" width="25" height="25"
 						   upSkin="@Embed(source='assets/photoEnable.png')"
 						   overSkin="@Embed(source='assets/photoActive.png')"
@@ -214,7 +219,7 @@
 						   buttonMode="true"
 						   click="dispatchEvent(new ControlEvent('controlButton', 'btnPhoto'))"/>
 				<s:Label styleName="commonColor middle" text="拍摄照片"/>
-			</s:HGroup>
+			</s:HGroup>-->
 			<s:HGroup id="shtUpload" verticalAlign="middle">				
 				<mx:Button label="" width="25" height="25"
 						   upSkin="@Embed(source='assets/uploadEnable.png')"
@@ -223,7 +228,7 @@
 						   disabledSkin="@Embed(source='assets/uploadDisable.png')"
 						   buttonMode="true"
 						   click="dispatchEvent(new ControlEvent('controlButton', 'btnUpload'))"/>
-				<s:Label styleName="commonColor middle" text="上传所选视频和照片"/>
+				<s:Label styleName="commonColor middle" text="上传所选视频"/>
 			</s:HGroup>
 			<s:HGroup id="shtOpen" verticalAlign="middle">				
 				<mx:Button label="" width="25" height="25"
@@ -233,7 +238,7 @@
 						   disabledSkin="@Embed(source='assets/openDisable.png')"
 						   buttonMode="true"
 						   click="dispatchEvent(new ControlEvent('controlButton', 'btnOpen'))"/>
-				<s:Label styleName="commonColor middle" text="选择已有视频"/>
+				<s:Label styleName="commonColor middle" text="播放其他视频"/>
 			</s:HGroup>
 		</s:VGroup>
 	</s:HGroup>

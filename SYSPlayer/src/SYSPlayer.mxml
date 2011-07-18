@@ -108,6 +108,10 @@
 			private var uploadTotalSize:int;
 			private var uploadLoadedSize:int;
 			private var uploadError:Boolean;
+			private var varNativeProcess:NativeProcess;
+			private var varExeFile:File;
+			private var varLogOutput:String;
+			private var varErrOutput:String;
 			
 			//interactive var
 			public var varNetStream:NetStream;
@@ -137,6 +141,8 @@
 			
 			public var varChoseMicIndex:int;
 			public var varChoseMic:Microphone;
+			
+			public var varChoseToConvertMovie:File;
 			
 			public var varChoseMovie:File;
 			public var varCurrentMovie:File;
@@ -300,12 +306,111 @@
 				
 			}
 			
-			public function browseFlvFile():void{
-				
+			public function browseFileToConvert():void
+			{	
+				varChoseToConvertMovie = new File();
+				varChoseToConvertMovie.addEventListener(Event.SELECT,selectToConvertHandler);
+				varChoseToConvertMovie.browse();				
+			}
+			
+			public function browseFlvFile():void
+			{	
 				var flvFilter:FileFilter = new FileFilter("视频文件","*.flv");
 				varChoseMovie = new File();
 				varChoseMovie.addEventListener(Event.SELECT,selectHandler);
 				varChoseMovie.browse([flvFilter]);				
+			}
+			
+			private function selectToConvertHandler(e:Event):void
+			{
+				transition.trasitionProcess("ORIGINAL", "ORIGINAL_FILECONVERT");
+			}
+			
+			
+			
+			public function convertMovie(rawFile:File):void
+			{
+				//copy the raw file to applicationStorageDirectory
+				varNativeProcess = new NativeProcess();
+				varNativeProcess.addEventListener(ProgressEvent.STANDARD_OUTPUT_DATA, onOutputData);
+				varNativeProcess.addEventListener(ProgressEvent.STANDARD_ERROR_DATA, onErrorData);
+				varNativeProcess.addEventListener(NativeProcessExitEvent.EXIT, onExit);
+				var os:String = flash.system.Capabilities.os.substr(0, 3);
+				if (os == "Win") {
+					varExeFile = File.applicationDirectory.resolvePath("ffmpeg.exe");
+				} else if (os == "Mac") {
+					varExeFile = File.applicationDirectory.resolvePath("ffmpeg");
+				} else {
+					trace("Must be Unix or Linux");
+				}
+				var startupInfo:NativeProcessStartupInfo = new NativeProcessStartupInfo();
+				startupInfo.executable = varExeFile;
+				startupInfo.workingDirectory = File.applicationStorageDirectory;
+				var processArgs:Vector.<String> = new Vector.<String>();	
+				
+				processArgs.push("-i",rawFile.nativePath,"-r","10","-s","320*240","-ar","22050","-vb","2000k","-y","-f","flv", varUserName + "_converted.flv");
+				
+				startupInfo.arguments = processArgs;
+				
+				try {
+					trace("pstart:" + new Date().getTime());
+					varNativeProcess.start(startupInfo);
+				} catch (e:IllegalOperationError) {
+					trace("Illegal Operation: "+e.toString());
+				} catch (ae:ArgumentError) {
+					trace("Argument Error: "+ae.toString());
+				} catch (e:Error) {
+					trace("Error: "+e.toString());
+				}
+			}
+			
+			public function onExit(e:NativeProcessExitEvent):void {
+				trace("Native Process Exit code: "+e.exitCode);
+				if (e.exitCode == 0)
+				{
+					var varFinalFlv:File = File.applicationStorageDirectory.resolvePath(varUserName + "_converted.flv");
+					var varTmpDate:Date = new Date();
+					var varTmpFileName:String = varUserName + "_converted_" + varTmpDate.getFullYear() + "_" + (varTmpDate.getMonth() + 1) + "_" + varTmpDate.getDate() + "_" + varTmpDate.getHours() + "_" + varTmpDate.getMinutes() + "_" + varTmpDate.getSeconds() + ".flv";
+					varFinalFlv.copyTo(File.desktopDirectory.resolvePath(varTmpFileName));
+					setCurrentMovie(File.desktopDirectory.resolvePath(varTmpFileName));
+					transition.transitionTo();
+				}
+				else 
+				{
+					transition.transitionTo();
+					Alert.show("格式不支持，未能转换成功!");
+				}
+			}
+			
+			private function onOutputData(evt:ProgressEvent):void{
+				varLogOutput +="\n"+varNativeProcess.standardOutput.readUTFBytes(varNativeProcess.standardOutput.bytesAvailable);
+/* 				var varTempFile:File = File.desktopDirectory.resolvePath("Convertlog.txt");
+				var varFs:FileStream = new FileStream();
+				varFs.open(varTempFile,FileMode.WRITE);
+				varFs.writeUTF(varLogOutput);				
+				varFs.close(); */
+				trace("outputdata");
+			}
+			
+			private function onErrorData(evt: ProgressEvent):void
+			{
+				var tmpStr:String = varNativeProcess.standardError.readUTFBytes(varNativeProcess.standardError.bytesAvailable);
+				
+				if (tmpStr.indexOf("time=") != -1)
+				{
+					var start:int;
+					var end:int;
+					start = tmpStr.indexOf("time=");
+					end = tmpStr.indexOf(" ", start);
+					transition.labPercent.text = "转换进度:" + tmpStr.substring(start, end);
+				}
+				varErrOutput +="\n"+ tmpStr;
+/* 				var varTempFile:File = File.desktopDirectory.resolvePath("Convertlog2.txt");
+				var varFs:FileStream = new FileStream();
+				varFs.open(varTempFile,FileMode.WRITE);
+				varFs.writeUTF(varErrOutput);	
+				varFs.close(); */
+				trace("errordata");
 			}
 			
 			private function selectHandler(e:Event):void
@@ -434,10 +539,10 @@
 			private function uploadFiles():void
 			{
 				
-/* 				if (login.labIp.text != "")
+				/* 				if (login.labIp.text != "")
 				{
-					serverSideScript = "http://" + login.labIp.text + "/~penn/test/upload_file.php";
-					trace(serverSideScript);
+				serverSideScript = "http://" + login.labIp.text + "/~penn/test/upload_file.php";
+				trace(serverSideScript);
 				} */
 				transition.prb.indeterminate = false;
 				transition.prb.mode = "manual";
@@ -635,9 +740,9 @@
 				var htpAuth:HTTPService = new HTTPService();
 				htpAuth.requestTimeout = 5;
 				var tmpUrl:String = "http://channelwin.info/~penn/test/upload_auth.php";
-/* 				if (login.labIp.text != "")
+				/* 				if (login.labIp.text != "")
 				{
-					tmpUrl = "http://" + login.labIp.text + "/~penn/test/upload_auth.php";
+				tmpUrl = "http://" + login.labIp.text + "/~penn/test/upload_auth.php";
 				} */
 				htpAuth.url = tmpUrl
 				htpAuth.method = "POST";
@@ -686,12 +791,18 @@
 	<s:layout>
 		<s:VerticalLayout horizontalAlign="right" paddingLeft="0" paddingRight="0" paddingBottom="0" paddingTop="0" gap="1"/>
 	</s:layout>
-	
-	<mx:Button width="20" height="17"
-			   upSkin="@Embed(source='assets/closeDefault.png')"
-			   overSkin="@Embed(source='assets/closeActive.png')"
-			   downSkin="@Embed(source='assets/closeActive.png')"
-			   click="this.close()"/>
+	<s:HGroup gap="1">
+		<mx:Button width="20" height="17"
+				   upSkin="@Embed(source='assets/minimumDefault.png')"
+				   overSkin="@Embed(source='assets/minimumActive.png')"
+				   downSkin="@Embed(source='assets/minimumActive.png')"
+				   click="this.minimize()"/>
+		<mx:Button width="20" height="17"
+				   upSkin="@Embed(source='assets/closeDefault.png')"
+				   overSkin="@Embed(source='assets/closeActive.png')"
+				   downSkin="@Embed(source='assets/closeActive.png')"
+				   click="this.close()"/>
+	</s:HGroup>
 	<components:LoginWindow id="login" varSYSPlayer="{this}" includeIn="LOGIN"/>
 	<components:OriginalWindow id="original" varSYSPlayer="{this}" includeIn="ORIGINAL"/>
 	<components:RecordWindow id="record" varSYSPlayer="{this}" includeIn="RECORD"/>

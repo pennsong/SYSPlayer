@@ -2,7 +2,7 @@
 <s:BorderContainer xmlns:fx="http://ns.adobe.com/mxml/2009"
 				   xmlns:s="library://ns.adobe.com/flex/spark"
 				   xmlns:mx="library://ns.adobe.com/flex/mx"
-				   width="322" height="281" backgroundColor="#000000" borderVisible="false"
+				   width="322" height="281" backgroundColor="#75A8E7" borderVisible="false"
 				   dropShadowVisible="true" xmlns:components="components.*">	
 	
 	<s:layout>
@@ -49,6 +49,12 @@
 					{
 						varSYSPlayer.auth();
 					}
+					else if (this.varToState == "ORIGINAL_FILECONVERT")
+					{
+						prb.indeterminate = true;
+						labInfo.text = "正在转换视频...";
+						varSYSPlayer.convertMovie(varSYSPlayer.varChoseToConvertMovie);
+					}
 					else
 					{
 						varSYSPlayer.original.cleanup();
@@ -86,7 +92,7 @@
 			
 			public function transitionTo():void
 			{
-				if ((varToState == "ORIGINAL_FILESELECTED" || varToState == "ORIGINAL_FILEUPLOADED" || varToState == "ORIGINAL") && varSYSPlayer.original != null)
+				if ((varToState == "ORIGINAL_FILESELECTED" || varToState == "ORIGINAL_FILEUPLOADED" || varToState == "ORIGINAL_FILECONVERT"|| varToState == "ORIGINAL") && varSYSPlayer.original != null)
 				{
 					varSYSPlayer.original.init();
 				}
@@ -108,7 +114,7 @@
 					varSYSPlayer.play.init();
 				}
 				
-				if (varToState == "ORIGINAL_FILESELECTED" || varToState == "ORIGINAL_FILEUPLOADED")
+				if (varToState == "ORIGINAL_FILESELECTED" || varToState == "ORIGINAL_FILEUPLOADED" || varToState == "ORIGINAL_FILECONVERT")
 				{
 					varToState = "ORIGINAL";
 				}
@@ -123,7 +129,7 @@
 	</fx:Declarations>
 	<s:VGroup height="100%" width="100%" horizontalAlign="center" verticalAlign="middle">
 		<s:Label id="labPercent" styleName="middle infoColorBlue"/>
-		<mx:ProgressBar id="prb" width="80%" height="11"/>
+		<mx:ProgressBar id="prb" width="80%" height="11" labelPlacement="center" labelWidth="0"/>
 		
 		<s:Label id="labInfo" styleName="middle infoColorBlue"/>
 	</s:VGroup>

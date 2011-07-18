@@ -2,7 +2,7 @@
 <s:BorderContainer xmlns:fx="http://ns.adobe.com/mxml/2009"
 				   xmlns:s="library://ns.adobe.com/flex/spark"
 				   xmlns:mx="library://ns.adobe.com/flex/mx"
-				   width="322" height="281" backgroundColor="#000000" borderVisible="false"
+				   width="322" height="281" backgroundColor="#75A8E7" borderVisible="false"
 				   dropShadowVisible="true" xmlns:components="components.*"
 				   creationComplete="init()">	
 	
@@ -80,6 +80,7 @@
 			{
 				cbg.currentState = "PLAYING";
 				cbg.switchLogout(false);
+				cbg.switchConvert(false);
 				cbg.switchPhoto(false);
 				cbg.switchPause(true);
 				cbg.switchRecord(false);				

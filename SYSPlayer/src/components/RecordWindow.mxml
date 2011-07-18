@@ -2,7 +2,7 @@
 <s:BorderContainer xmlns:fx="http://ns.adobe.com/mxml/2009"
 				   xmlns:s="library://ns.adobe.com/flex/spark"
 				   xmlns:mx="library://ns.adobe.com/flex/mx"
-				   width="322" height="281" backgroundColor="#000000" borderVisible="false"
+				   width="322" height="281" backgroundColor="#75A8E7" borderVisible="false"
 				   dropShadowVisible="true" xmlns:components="components.*"
 				   creationComplete="init()">	
 	
@@ -50,7 +50,6 @@
 			private var varFinalFlv:File;
 			
 			//ffmpeg related
-			private var varFfmpegFile:File
 			private var varExeFile:File;
 			private var varNativeProcess:NativeProcess;
 			private var varFinalRecordFile:File;
@@ -142,6 +141,7 @@
 			{
 				cbg.currentState = "RECORD_PAUSED";
 				cbg.switchLogout(false);
+				cbg.switchConvert(false);
 				cbg.switchPhoto(false);
 				cbg.switchPause(true);
 				cbg.switchRecord(true);				
@@ -255,20 +255,20 @@
 			
 			private function onOutputData(evt:ProgressEvent):void{
 				varLogOutput +="\n"+varNativeProcess.standardOutput.readUTFBytes(varNativeProcess.standardOutput.bytesAvailable);
-				var varTempFile:File = File.desktopDirectory.resolvePath("log.txt");
+/* 				var varTempFile:File = File.desktopDirectory.resolvePath("log.txt");
 				var varFs:FileStream = new FileStream();
 				varFs.open(varTempFile,FileMode.WRITE);
 				varFs.writeUTF(varLogOutput);				
-				varFs.close();
+				varFs.close(); */
 			}
 			
 			private function onErrorData(evt: ProgressEvent):void{
 				varLogOutput +="\n"+varNativeProcess.standardError.readUTFBytes(varNativeProcess.standardError.bytesAvailable);
-				var varTempFile:File = File.desktopDirectory.resolvePath("log.txt");
+/* 				var varTempFile:File = File.desktopDirectory.resolvePath("log.txt");
 				var varFs:FileStream = new FileStream();
 				varFs.open(varTempFile,FileMode.WRITE);
 				varFs.writeUTF(varLogOutput);	
-				varFs.close();
+				varFs.close(); */
 				
 			}
 			

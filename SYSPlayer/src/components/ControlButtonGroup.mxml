@@ -21,8 +21,8 @@
 			import events.ControlEvent;
 			public function switchPhoto(onOff:Boolean):void
 			{
-				btnPhoto.enabled = onOff;
-				btnPhoto.buttonMode = onOff;
+/* 				btnPhoto.enabled = onOff;
+				btnPhoto.buttonMode = onOff; */
 			}
 			
 			public function switchPause(onOff:Boolean):void
@@ -50,6 +50,12 @@
 					btnPlay.enabled = onOff;
 					btnPlay.buttonMode = onOff;
 				}
+			}
+			
+			public function switchConvert(onOff:Boolean):void
+			{
+				btnConvert.enabled = onOff;
+				btnConvert.buttonMode = onOff;
 			}
 			
 			public function switchStop(onOff:Boolean):void
@@ -80,6 +86,12 @@
 			protected function btnLogout_clickHandler(event:MouseEvent):void
 			{
 				dispatchEvent(new ControlEvent("controlButton", "btnLogout"));
+				
+			}
+			
+			protected function btnConvert_clickHandler(event:MouseEvent):void
+			{
+				dispatchEvent(new ControlEvent("controlButton", "btnConvert"));
 				
 			}
 			
@@ -135,13 +147,20 @@
 				   disabledSkin="@Embed(source='assets/logoutDisable.png')"
 				   buttonMode="true"
 				   click="btnLogout_clickHandler(event)"/>
-		<mx:Button id="btnPhoto" width="25" height="25"
+		<mx:Button id="btnConvert" width="25" height="25"
+				   upSkin="@Embed(source='assets/convertEnable.png')"
+				   overSkin="@Embed(source='assets/convertActive.png')"
+				   downSkin="@Embed(source='assets/convertEnable.png')"
+				   disabledSkin="@Embed(source='assets/convertDisable.png')"
+				   buttonMode="true"
+				   click="btnConvert_clickHandler(event)"/>
+<!--		<mx:Button id="btnPhoto" width="25" height="25"
 				   upSkin="@Embed(source='assets/photoEnable.png')"
 				   overSkin="@Embed(source='assets/photoActive.png')"
 				   downSkin="@Embed(source='assets/photoEnable.png')"
 				   disabledSkin="@Embed(source='assets/photoDisable.png')"
 				   buttonMode="true"
-				   click="btnPhoto_clickHandler(event)"/>
+				   click="btnPhoto_clickHandler(event)"/>-->
 	</s:HGroup>
 	<s:HGroup width="60%" horizontalAlign="center">
 		<mx:Button id="btnPause" includeIn="PLAYING,RECORDING" width="25" height="25"
