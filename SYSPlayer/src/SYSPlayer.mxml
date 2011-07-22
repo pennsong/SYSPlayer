@@ -195,6 +195,8 @@
 			
 			private function onMouseDown(evt:MouseEvent):void
 			{
+				trace(evt.target.toString());
+				trace(evt.currentTarget.toString());
 				stage.nativeWindow.startMove();
 			}
 			

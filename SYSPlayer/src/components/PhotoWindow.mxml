@@ -141,6 +141,6 @@
 	</s:VGroup>
 	<s:Label id="labAuth" styleName="small infoColorBlue" textAlign="center" width="100%"/>
 	
-	<components:ControlButtonGroup id="cbg" width="100%"/>
+	<components:ControlButtonGroup id="cbg"/>
 	
 </s:BorderContainer>

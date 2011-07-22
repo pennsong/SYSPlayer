@@ -46,6 +46,7 @@
 			public function init():void
 			{		
 				addEventListener(ControlEvent.CONTROL_BUTTON, controlEventHandler);
+				hslPreviewPgb.addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
 				if (video == null)
 				{
 					video = new Video(videoWidth, videoHeight);
@@ -78,6 +79,11 @@
 				
 				resetShotcutButton();
 				resetControlButton();
+			}
+			
+			private function onMouseDown(evt:MouseEvent):void
+			{
+				evt.stopPropagation();
 			}
 			
 			public function cleanup():void
@@ -255,5 +261,5 @@
 						selectedIndex="0"/>
 	</s:HGroup>
 	<s:Label styleName="small infoColorBlue" textAlign="center" text="{varSYSPlayer.varAuthInfo}" width="100%"/>
-	<components:ControlButtonGroup id="cbg" width="100%"/>
+	<components:ControlButtonGroup id="cbg"/>
 </s:BorderContainer>

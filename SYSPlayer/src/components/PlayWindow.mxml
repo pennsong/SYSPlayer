@@ -19,13 +19,14 @@
 	<fx:Metadata>
 		[Event(name="controlButton", type="events.ControlEvent")]
 	</fx:Metadata>
-
+	
 	
 	<fx:Script>
 		<![CDATA[
 			import events.ControlEvent;
 			
 			import mx.events.FlexEvent;
+			import mx.events.SliderEvent;
 			private var varInfo:String;
 			private var varVideo:Video;
 			private var varAuthInfo:String;
@@ -41,11 +42,14 @@
 			private var varUserCompany:String;
 			[Bindable]
 			public var varSYSPlayer:SYSPlayer;
-
+			
 			
 			public function init():void
 			{
-				varTransform = new SoundTransform(hslVol.value, 1.0);
+				hsl.addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
+				hsl.addEventListener(SliderEvent.CHANGE, changeEventHandler);
+				hslVol..addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
+				varTransform = new SoundTransform(hslVol.value, 0);
 				labAuth.text = varSYSPlayer.varAuthInfo;
 				resetControlButton();
 				addEventListener(ControlEvent.CONTROL_BUTTON, controlEventHandler);
@@ -58,8 +62,12 @@
 				varSYSPlayer.varNetStream.seek(0);
 				varSYSPlayer.varNetStream.soundTransform = varTransform;
 				varSYSPlayer.varNetStream.resume();
-				hsl.addEventListener(MouseEvent.MOUSE_DOWN, hslMouseDownHandler);
 				addEventListener(Event.ENTER_FRAME,enterFrameHandler);
+			}
+			
+			private function onMouseDown(evt:MouseEvent):void
+			{
+				evt.stopPropagation();
 			}
 			
 			private function controlEventHandler(e:ControlEvent):void
@@ -95,17 +103,16 @@
 				cbg.switchUpload(false);
 				cbg.switchOpen(false);
 			}
-			
-			protected function hslMouseDownHandler(e:MouseEvent):void
+				
+			protected function changeEventHandler(e:Event):void
 			{
 				varSYSPlayer.varNetStream.pause();
-				varSYSPlayer.varNetStream.seek((e.localX / hsl.width) * varSYSPlayer.varMovieDuration);
+				varSYSPlayer.varNetStream.seek(e.target.value);
 				if (cbg.currentState == "PLAYING")
 				{
 					varSYSPlayer.varNetStream.resume();
 				}
-				
-			}			
+			}
 			
 			private function enterFrameHandler(e:Event):void
 			{
@@ -132,20 +139,26 @@
 		
 		<s:BorderContainer width="{varFlvWidth}" height="{varFlvHeight}" >
 			<s:Label styleName="small infoColorYellow" text="ddddddddd"/>
-
+			
 			<s:VideoDisplay id="vidVideo" width="{varFlvWidth}" height="{varFlvHeight}"/>
 			<s:HSlider id="hsl" buttonMode="true" x="0" y="{varFlvHeight-hsl.height}" width="100%" maximum="{varSYSPlayer.varMovieDuration}"/>
-			<s:Label id="labVol" styleName="small infoColorYellow" text="音量" y="0" x="{varFlvWidth - hslVol.width - labVol.width}"/>
-			<s:HSlider id="hslVol" x="{varFlvWidth - hslVol.width}" y="0" width="60"
-						liveDragging="false" maximum="1.0" minimum="0.0" snapInterval="0.01"
-						value="0.7"
-						valueCommit="hslVolMouseDownHandler(event)"/>
-				
+			
+			
 		</s:BorderContainer>
-
+		
 	</s:VGroup>
 	<s:Label id="labAuth" styleName="infoColorBlue small" textAlign="center" width="100%"/>
-		
-	<components:ControlButtonGroup id="cbg" width="100%"/>
 	
+	<s:HGroup width="100%" verticalAlign="middle">
+		<s:HGroup width="70%" horizontalAlign="left">
+			<components:ControlButtonGroup id="cbg"/>
+		</s:HGroup>
+		<s:HGroup width="30%" horizontalAlign="right" verticalAlign="middle">
+			<s:Label id="labVol" styleName="small infoColorYellow" text="音量" y="0" x="{varFlvWidth - hslVol.width - labVol.width}"/>
+			<s:HSlider id="hslVol" x="{varFlvWidth - hslVol.width}" y="0" width="60"
+					   liveDragging="false" maximum="1.0" minimum="0.0" snapInterval="0.01"
+					   value="0.7"
+					   valueCommit="hslVolMouseDownHandler(event)"/>
+		</s:HGroup>
+	</s:HGroup>
 </s:BorderContainer>

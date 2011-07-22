@@ -135,6 +135,6 @@
 		<s:Label id="labInfo" styleName="middle infoColorBlue"/>
 	</s:VGroup>
 	
-	<components:ControlButtonGroup enabled="false" width="100%"/>
+	<components:ControlButtonGroup enabled="false"/>
 	
 </s:BorderContainer>

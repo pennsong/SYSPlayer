@@ -2,7 +2,7 @@
 <s:HGroup xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		  xmlns:s="library://ns.adobe.com/flex/spark" 
 		  xmlns:mx="library://ns.adobe.com/flex/mx"
-		  horizontalAlign="center">
+		  horizontalAlign="left">
 	<s:states>
 		<s:State name="NORMAL"/>
 		<s:State name="RECORDING"/>
@@ -139,21 +139,23 @@
 		]]>
 	</fx:Script>
 	
-	<s:HGroup width="20%">
+	<s:HGroup>
 		<mx:Button id="btnLogout" width="25" height="25"
 				   upSkin="@Embed(source='assets/logoutEnable.png')"
 				   overSkin="@Embed(source='assets/logoutActive.png')"
 				   downSkin="@Embed(source='assets/logoutEnable.png')"
 				   disabledSkin="@Embed(source='assets/logoutDisable.png')"
 				   buttonMode="true"
-				   click="btnLogout_clickHandler(event)"/>
+				   click="btnLogout_clickHandler(event)"
+				   toolTip="登出"/>
 		<mx:Button id="btnConvert" width="25" height="25"
 				   upSkin="@Embed(source='assets/convertEnable.png')"
 				   overSkin="@Embed(source='assets/convertActive.png')"
 				   downSkin="@Embed(source='assets/convertEnable.png')"
 				   disabledSkin="@Embed(source='assets/convertDisable.png')"
 				   buttonMode="true"
-				   click="btnConvert_clickHandler(event)"/>
+				   click="btnConvert_clickHandler(event)"
+				   toolTip="转换视频"/>
 <!--		<mx:Button id="btnPhoto" width="25" height="25"
 				   upSkin="@Embed(source='assets/photoEnable.png')"
 				   overSkin="@Embed(source='assets/photoActive.png')"
@@ -162,27 +164,30 @@
 				   buttonMode="true"
 				   click="btnPhoto_clickHandler(event)"/>-->
 	</s:HGroup>
-	<s:HGroup width="60%" horizontalAlign="center">
+	<s:HGroup>
 		<mx:Button id="btnPause" includeIn="PLAYING,RECORDING" width="25" height="25"
 				   click="btnPause_clickHandler(event)"
 				   disabledSkin="@Embed(source='assets/pauseDisable.png')"
 				   downSkin="@Embed(source='assets/pauseEnable.png')"
 				   overSkin="@Embed(source='assets/pauseActive.png')"
 				   upSkin="@Embed(source='assets/pauseEnable.png')"
-				   buttonMode="true"/>
+				   buttonMode="true"
+				   toolTip="暂停"/>
 		<mx:Button id="btnPlay" includeIn="NORMAL,PLAY_PAUSED" width="25" height="25"
 				   click="btnPlay_clickHandler(event)"
 				   disabledSkin="@Embed(source='assets/playDisable.png')"
 				   downSkin="@Embed(source='assets/playEnable.png')"
 				   overSkin="@Embed(source='assets/playActive.png')"
 				   upSkin="@Embed(source='assets/playEnable.png')"
-				   buttonMode="true"/>
+				   buttonMode="true"
+				   toolTip="播放"/>
 		<mx:Button id="btnRecord" includeIn="NORMAL,RECORD_PAUSED" width="25" height="25"
 				   buttonMode="true" click="btnRecord_clickHandler(event)"
 				   disabledSkin="@Embed(source='assets/recordDisable.png')"
 				   downSkin="@Embed(source='assets/recordEnable.png')"
 				   overSkin="@Embed(source='assets/recordActive.png')"
-				   upSkin="@Embed(source='assets/recordEnable.png')"/>
+				   upSkin="@Embed(source='assets/recordEnable.png')"
+				   toolTip="录制"/>
 		<mx:Button id="btnStop" width="25" height="25"
 				   upSkin="@Embed(source='assets/stopEnable.png')"
 				   overSkin="@Embed(source='assets/stopActive.png')"
@@ -190,23 +195,26 @@
 				   disabledSkin="@Embed(source='assets/stopDisable.png')"
 				   buttonMode="true"
 				   click="btnStop_clickHandler(event)"
+				   toolTip="停止"
 				   />
 	</s:HGroup>
-	<s:HGroup width="20%" horizontalAlign="right">
+	<s:HGroup>
 		<mx:Button id="btnOpen" width="25" height="25"
 				   upSkin="@Embed(source='assets/openEnable.png')"
 				   overSkin="@Embed(source='assets/openActive.png')"
 				   downSkin="@Embed(source='assets/openEnable.png')"
 				   disabledSkin="@Embed(source='assets/openDisable.png')"
 				   buttonMode="true"
-				   click="btnOpen_clickHandler(event)"/>
+				   click="btnOpen_clickHandler(event)"
+				   toolTip="打开其他视频"/>
 		<mx:Button id="btnUpload" width="25" height="25"
 				   upSkin="@Embed(source='assets/uploadEnable.png')"
 				   overSkin="@Embed(source='assets/uploadActive.png')"
 				   downSkin="@Embed(source='assets/uploadEnable.png')"
 				   disabledSkin="@Embed(source='assets/uploadDisable.png')"
 				   buttonMode="true"
-				   click="btnUpload_clickHandler(event)"/>
+				   click="btnUpload_clickHandler(event)"
+				   toolTip="上传"/>
 	</s:HGroup>
 	
 	
