@@ -21,7 +21,14 @@
 	</fx:Metadata>
 	<fx:Style>	
 		@namespace s "library://ns.adobe.com/flex/spark";
-		@namespace mx "library://ns.adobe.com/flex/mx";		
+		@namespace mx "library://ns.adobe.com/flex/mx";	
+		
+		mx|ToolTip{
+			font-size: 13;
+			font-style: normal;
+			font-weight: normal;
+		}
+		
 		s|DropDownList #labelDisplay
 		{
 			font-style:italic;

@@ -147,7 +147,7 @@
 				   disabledSkin="@Embed(source='assets/logoutDisable.png')"
 				   buttonMode="true"
 				   click="btnLogout_clickHandler(event)"
-				   toolTip="登出"/>
+				   toolTip="退出"/>
 		<mx:Button id="btnConvert" width="25" height="25"
 				   upSkin="@Embed(source='assets/convertEnable.png')"
 				   overSkin="@Embed(source='assets/convertActive.png')"
