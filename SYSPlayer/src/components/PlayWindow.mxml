@@ -27,6 +27,7 @@
 			
 			import mx.events.FlexEvent;
 			import mx.events.SliderEvent;
+			import mx.formatters.NumberBase;
 			private var varInfo:String;
 			private var varVideo:Video;
 			private var varAuthInfo:String;
@@ -49,7 +50,7 @@
 				hsl.addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
 				hsl.addEventListener(SliderEvent.CHANGE, changeEventHandler);
 				hslVol..addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
-				varTransform = new SoundTransform(hslVol.value, 0);
+				varTransform = new SoundTransform(hslVol.value / 100, 0);
 				labAuth.text = varSYSPlayer.varAuthInfo;
 				resetControlButton();
 				addEventListener(ControlEvent.CONTROL_BUTTON, controlEventHandler);
@@ -122,10 +123,14 @@
 			private function hslVolMouseDownHandler(event:Event):void
 			{
 				var tmpSoundTransform:SoundTransform = varSYSPlayer.varNetStream.soundTransform;
-				tmpSoundTransform.volume = hslVol.value;
+				tmpSoundTransform.volume = hslVol.value / 100;
 				varSYSPlayer.varNetStream.soundTransform = tmpSoundTransform;			
 			}
 			
+			private function myDataTipFormatter(value:Number):Object { 
+				var dataFormatter:NumberBase = new NumberBase(".", ",", ".", ""); 
+				return  "" + dataFormatter.formatPrecision(String(value), 0) + "%";
+			}
 		]]>
 	</fx:Script>
 	
@@ -154,10 +159,13 @@
 			<components:ControlButtonGroup id="cbg"/>
 		</s:HGroup>
 		<s:HGroup width="30%" horizontalAlign="right" verticalAlign="middle">
-			<s:Label id="labVol" styleName="small infoColorYellow" text="音量" y="0" x="{varFlvWidth - hslVol.width - labVol.width}"/>
+			<s:Image id="imgVol" x="{varFlvWidth - hslVol.width - imgVol.width}" y="0" 
+				source="@Embed(source='assets/soundDefault.png')"
+				toolTip="音量"/>
 			<s:HSlider id="hslVol" x="{varFlvWidth - hslVol.width}" y="0" width="60"
-					   liveDragging="false" maximum="1.0" minimum="0.0" snapInterval="0.01"
-					   value="0.7"
+					   liveDragging="false" maximum="100" minimum="0" snapInterval="1"
+					   dataTipFormatFunction="myDataTipFormatter"
+					   value="70"
 					   valueCommit="hslVolMouseDownHandler(event)"/>
 		</s:HGroup>
 	</s:HGroup>
