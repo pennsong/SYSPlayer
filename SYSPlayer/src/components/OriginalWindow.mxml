@@ -3,7 +3,7 @@
 				   xmlns:s="library://ns.adobe.com/flex/spark"
 				   xmlns:mx="library://ns.adobe.com/flex/mx"
 				   xmlns:components="components.*"
-				   width="322" height="281" backgroundColor="#75A8E7" borderVisible="false"
+				   width="322" height="281" backgroundColor="#000000" borderVisible="false"
 				   dropShadowVisible="true"
 				   creationComplete="init()">	
 	
@@ -116,7 +116,7 @@
 					shtPlay.includeInLayout = false;
 					shtPlay.visible = false;
 				}
-/* 				shtPhoto.includeInLayout = true; */
+ 				shtPhoto.includeInLayout = true; 
 				if (varSYSPlayer.varMovieByteArray != null)
 				{
 					shtUpload.includeInLayout = true;
@@ -216,7 +216,7 @@
 						   click="dispatchEvent(new ControlEvent('controlButton', 'btnPlay'))"/>
 				<s:Label styleName="commonColor middle" text="播放所选视频"/>
 			</s:HGroup>
-<!--			<s:HGroup id="shtPhoto" verticalAlign="middle">				
+			<s:HGroup id="shtPhoto" verticalAlign="middle">				
 				<mx:Button label="" width="25" height="25"
 						   upSkin="@Embed(source='assets/photoEnable.png')"
 						   overSkin="@Embed(source='assets/photoActive.png')"
@@ -225,7 +225,7 @@
 						   buttonMode="true"
 						   click="dispatchEvent(new ControlEvent('controlButton', 'btnPhoto'))"/>
 				<s:Label styleName="commonColor middle" text="拍摄照片"/>
-			</s:HGroup>-->
+			</s:HGroup>
 			<s:HGroup id="shtUpload" verticalAlign="middle">				
 				<mx:Button label="" width="25" height="25"
 						   upSkin="@Embed(source='assets/uploadEnable.png')"

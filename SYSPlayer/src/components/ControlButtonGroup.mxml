@@ -21,8 +21,8 @@
 			import events.ControlEvent;
 			public function switchPhoto(onOff:Boolean):void
 			{
-/* 				btnPhoto.enabled = onOff;
-				btnPhoto.buttonMode = onOff; */
+ 				btnPhoto.enabled = onOff;
+				btnPhoto.buttonMode = onOff; 
 			}
 			
 			public function switchPause(onOff:Boolean):void
@@ -156,13 +156,13 @@
 				   buttonMode="true"
 				   click="btnConvert_clickHandler(event)"
 				   toolTip="转换视频"/>
-<!--		<mx:Button id="btnPhoto" width="25" height="25"
+		<mx:Button id="btnPhoto" width="25" height="25"
 				   upSkin="@Embed(source='assets/photoEnable.png')"
 				   overSkin="@Embed(source='assets/photoActive.png')"
 				   downSkin="@Embed(source='assets/photoEnable.png')"
 				   disabledSkin="@Embed(source='assets/photoDisable.png')"
 				   buttonMode="true"
-				   click="btnPhoto_clickHandler(event)"/>-->
+				   click="btnPhoto_clickHandler(event)"/>
 	</s:HGroup>
 	<s:HGroup>
 		<mx:Button id="btnPause" includeIn="PLAYING,RECORDING" width="25" height="25"
