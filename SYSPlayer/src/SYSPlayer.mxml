@@ -111,7 +111,7 @@
 			
 			private var urlRequest:URLRequest;
 			private var fileReferenceList:FileReferenceList;
-			private var serverSideScript:String = "http://channelwin.info/~penn/test/upload_file.php";
+			private var serverSideScript:String = "http://www.shiyishi.cn/do/videoAddvod.do";
 			private var uploadTotalSize:int;
 			private var uploadLoadedSize:int;
 			private var uploadError:Boolean;
@@ -565,7 +565,8 @@
 				else
 				{
 					uploadLoadedSize = 0;
-					uploadPhoto();
+					//uploadPhoto();
+					uploadVideo();
 				}
 			}
 			
@@ -601,8 +602,11 @@
 			private function movieDataHandler(e:DataEvent):void
 			{
 				trace("called after file upload is done and Data has been returned from Server:" + e.data.toString() + "dddddddddddd");
-				if (e.data.indexOf("SUCCESS") == 0)
+				if (e.data.indexOf("恭喜") == 0)
 				{
+					transition.prb.setProgress(uploadTotalSize, uploadTotalSize);
+					transition.labPercent.text = '100%';
+					
 					transition.labInfo.text = "文件上传成功！";
 					setTimeout(transition.transitionTo, 3000);
 				}
@@ -698,8 +702,8 @@
 			private function uploadVideo():void
 			{
 				var params:URLVariables = new URLVariables();
-				params.user = varUserName;
-				params.pass = varPassword;
+				params.uemail = varUserName;
+				params.upassword = varPassword;
 				params.type = ".flv";
 				
 				urlRequest = new URLRequest(serverSideScript);
@@ -724,7 +728,7 @@
 					//test
 					try
 					{
-						varCurrentMovie.upload(urlRequest);
+						varCurrentMovie.upload(urlRequest, 'vodurl');
 					}
 					catch (e:Error)
 					{	
@@ -741,53 +745,8 @@
 			
 			public function auth():void
 			{				
-				transition.labInfo.text = "正在验证用户...";
-				var encoder:Base64Encoder = new Base64Encoder();
-				encoder.insertNewLines = false; 
-				encoder.encode(varUserName + ":" + varPassword);
-				
-				var htpAuth:HTTPService = new HTTPService();
-				htpAuth.requestTimeout = 5;
-				var tmpUrl:String = "http://channelwin.info/~penn/test/upload_auth.php";
-				/* 				if (login.labIp.text != "")
-				{
-				tmpUrl = "http://" + login.labIp.text + "/~penn/test/upload_auth.php";
-				} */
-				htpAuth.url = tmpUrl
-				htpAuth.method = "POST";
-				htpAuth.addEventListener(FaultEvent.FAULT, httpFault);
-				htpAuth.addEventListener(ResultEvent.RESULT, httpResult);
-				htpAuth.headers["Authorization"] = "Basic " + encoder.toString();
-				htpAuth.send();
-			}
-			
-			private function httpResult(e:ResultEvent):void
-			{
-				if (e.result == "Auth Success")
-				{
-					uploadFiles();
-				}
-				else
-				{
-					Alert.show("用户验证失败，请重新登录后重试！");
-					transition.transitionTo();
-				}
-			}
-			
-			private function httpFault(e:FaultEvent):void
-			{
-				if (e.statusCode == 400 || e.statusCode == 0)
-				{
-					Alert.show("连不上服务器，请检查网络后重试");
-					trace("连不上服务器，请检查网络后重试");
-				}
-				else if (e.statusCode == 404)
-				{
-					Alert.show("服务器维护中，请稍候再试");
-					trace("服务器维护中，请稍候再试");
-				}
-				trace("httpFault:" + e.statusCode);
-				transition.transitionTo();
+				//auth included in uploadFiles
+				uploadFiles();
 			}
 			
 		]]>
