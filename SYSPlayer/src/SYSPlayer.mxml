@@ -324,7 +324,7 @@
 			
 			public function browseFlvFile():void
 			{	
-				var flvFilter:FileFilter = new FileFilter("视频文件","*.flv");
+				var flvFilter:FileFilter = new FileFilter("视频文件","*.flv;*.flvshiyishi");
 				varChoseMovie = new File();
 				varChoseMovie.addEventListener(Event.SELECT,selectHandler);
 				varChoseMovie.browse([flvFilter]);				
