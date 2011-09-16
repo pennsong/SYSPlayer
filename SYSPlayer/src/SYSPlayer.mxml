@@ -446,6 +446,27 @@
 					fs.close();
 				}
 			}
+		
+			private function decodeMovieData(sourceArray:ByteArray):ByteArray
+			{
+				var sign:ByteArray = new ByteArray();
+				sourceArray.readBytes(sign, 0, 14);
+				if (sign.toString() == 'pennsongSigned')
+				{
+					var pwd = 'songpengcheng';
+					var decodedByteArray:ByteArray = new ByteArray();
+					sourceArray.readBytes(decodedByteArray);
+					for (var i:int = 0; i < decodedByteArray.length; i++)
+					{
+						decodedByteArray[i] = decodedByteArray[i]^pwd.charCodeAt(i%pwd.length);
+					}
+					return decodedByteArray;
+				}
+				else
+				{
+					return sourceArray;
+				}
+			}
 			
 			private function resetAndLoadMovie():void
 			{
@@ -463,6 +484,9 @@
 				varNetStream.play(null);
 				
 				varMetaObject.onSeekPoint = onSeekPointHandler;
+				
+				varMovieByteArray = decodeMovieData(varMovieByteArray);
+				
 				varNetStream.appendBytes(varMovieByteArray);
 				varMetaObject.onSeekPoint = onSeekPointHandler_null;
 				varNetStream.pause();
