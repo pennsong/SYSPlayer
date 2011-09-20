@@ -453,7 +453,7 @@
 				sourceArray.readBytes(sign, 0, 14);
 				if (sign.toString() == 'pennsongSigned')
 				{
-					var pwd = 'songpengcheng';
+					var pwd:String = 'songpengcheng';
 					var decodedByteArray:ByteArray = new ByteArray();
 					sourceArray.readBytes(decodedByteArray);
 					for (var i:int = 0; i < decodedByteArray.length; i++)
