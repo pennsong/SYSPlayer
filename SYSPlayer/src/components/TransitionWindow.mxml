@@ -38,7 +38,11 @@
 				this.varFromState = varFromState;
 				this.varToState = varToState;
 				varSYSPlayer.setCurrentState("TRANSITION");
-				if (this.varFromState == "LOGIN")
+				if (this.varFromState == "HUNTER_LOGIN")
+				{
+					transitionTo();
+				}
+				else if (this.varFromState == "LOGIN")
 				{
 					varSYSPlayer.login.cleanup();
 					transitionTo();

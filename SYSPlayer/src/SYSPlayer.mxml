@@ -5,11 +5,12 @@
 					   xmlns:components="components.*"
 					   backgroundAlpha="0.0"
 					   showStatusBar="false"
-					   currentState="LOGIN"
+					   currentState="HUNTER_LOGIN"
 					   width="322" height="299"
 					   creationComplete="init()">
 	<s:states>
 		<s:State name="ORIGINAL"/>
+		<s:State name="HUNTER_LOGIN"/>
 		<s:State name="LOGIN"/>
 		<s:State name="RECORD"/>
 		<s:State name="PLAY"/>
@@ -109,9 +110,10 @@
 			private var varMetaObject:Object;
 			private var varNetConnection:NetConnection;
 			
+			private var uploadingList:Array;
 			private var urlRequest:URLRequest;
 			private var fileReferenceList:FileReferenceList;
-			private var serverSideScript:String = "http://channelwin.info/~penn/test/upload_file.php";
+			private var serverSideScript:String = "http://www.channelwin.info/upload_file.php";
 			private var uploadTotalSize:int;
 			private var uploadLoadedSize:int;
 			private var uploadError:Boolean;
@@ -133,13 +135,20 @@
 			public var varflvFrameRate:int = 10;
 			
 			[Bindable]
-			public var varUserName:String;
+			public var varHunterUserName:String;		
 			[Bindable]
-			public var varPassword:String;
+			public var varHunterPassword:String;
+			
+			[Bindable]
+			public var varMobile:String;
+			[Bindable]
+			public var varUserName:String;
 			public var varUserCompany:String;
 			[Bindable]
 			public var varAuthInfo:String;
 			
+			public var varUploadingFile:File;
+			public var varUploadingPhoto:File;
 			public var varCurrentPhoto:File;
 			public var varPhotoBitmapData:BitmapData;
 			
@@ -151,6 +160,7 @@
 			
 			public var varChoseToConvertMovie:File;
 			
+			public var varUploadingMovie:File;
 			public var varChoseMovie:File;
 			public var varCurrentMovie:File;
 			public var varMovieSecToKeyFrame:Array;
@@ -181,8 +191,8 @@
 			
 			private function cleanup():void
 			{
+				varMobile="";
 				varUserName="";
-				varPassword="";
 				varCurrentPhoto = null;
 				varPhotoBitmapData = null;
 				varChoseCameraIndex = 0;
@@ -212,6 +222,14 @@
 				trace("d:" + e.type + ":" + e.strButton);
 				switch(currentState)
 				{
+					case "HUNTER_LOGIN":
+					{
+						if (e.strButton == "btnHunterLogin")
+						{
+							transition.trasitionProcess("HUNTER_LOGIN", "LOGIN");
+						}
+						break;					
+					}
 					case "LOGIN":
 					{
 						if (e.strButton == "btnLogin")
@@ -357,7 +375,7 @@
 				startupInfo.workingDirectory = File.applicationStorageDirectory;
 				var processArgs:Vector.<String> = new Vector.<String>();	
 				
-				processArgs.push("-i",rawFile.nativePath,"-r","10","-s","320*240","-ar","22050","-vb","2000k","-y","-f","flv", varUserName + "_converted.flv");
+				processArgs.push("-i",rawFile.nativePath,"-r","10","-s","320*240","-ar","22050","-vb","2000k","-y","-f","flv", varMobile + "_converted.flv");
 				
 				startupInfo.arguments = processArgs;
 				
@@ -377,9 +395,9 @@
 				trace("Native Process Exit code: "+e.exitCode);
 				if (e.exitCode == 0)
 				{
-					var varFinalFlv:File = File.applicationStorageDirectory.resolvePath(varUserName + "_converted.flv");
+					var varFinalFlv:File = File.applicationStorageDirectory.resolvePath(varMobile + "_converted.flv");
 					var varTmpDate:Date = new Date();
-					var varTmpFileName:String = varUserName + "_converted_" + varTmpDate.getFullYear() + "_" + (varTmpDate.getMonth() + 1) + "_" + varTmpDate.getDate() + "_" + varTmpDate.getHours() + "_" + varTmpDate.getMinutes() + "_" + varTmpDate.getSeconds() + ".flv";
+					var varTmpFileName:String = varMobile + "_converted_" + varTmpDate.getFullYear() + "_" + (varTmpDate.getMonth() + 1) + "_" + varTmpDate.getDate() + "_" + varTmpDate.getHours() + "_" + varTmpDate.getMinutes() + "_" + varTmpDate.getSeconds() + ".flv";
 					varFinalFlv.copyTo(File.desktopDirectory.resolvePath(varTmpFileName));
 					setCurrentMovie(File.desktopDirectory.resolvePath(varTmpFileName));
 					transition.transitionTo();
@@ -439,7 +457,8 @@
 				if (varPhotoBitmapData != null)
 				{
 					var png:ByteArray = new PNGEncoder().encode(varPhotoBitmapData);
-					varCurrentPhoto = File.applicationStorageDirectory.resolvePath(varUserName + ".png");
+					var varTmpDate:Date = new Date();
+					varCurrentPhoto = File.applicationStorageDirectory.resolvePath(varHunterUserName +  "_" + varMobile + "_" + varUserName + ".png");
 					var fs:FileStream = new FileStream();
 					fs.open(varCurrentPhoto, FileMode.WRITE);
 					fs.writeBytes(png);
@@ -545,18 +564,76 @@
 				return checkSec;
 			}
 			
+			private function uploadPrepare():void
+			{
+				var uploadingFolder:File = File.applicationStorageDirectory;
+				uploadingList=uploadingFolder.getDirectoryListing();
+				uploadingList.sort();
+				upload();
+			}
+			
+			private function upload():void
+			{
+				var tmpRegex:RegExp = /.+_.+_.+/;
+				var tmpFile:File;
+				while (tmpFile = uploadingList.shift())
+				{
+					if (tmpRegex.test(tmpFile.name))
+					{
+						varUploadingFile = tmpFile;
+						
+						var params:URLVariables = new URLVariables();
+						params.user = varMobile;
+						params.pass = varUserName;
+						params.type = ".png";
+						
+						if (login.labIp.text != "")
+						{
+							serverSideScript = "http://" + login.labIp.text + "/upload_file.php";
+						}
+						
+						urlRequest = new URLRequest(serverSideScript);
+						urlRequest.method = URLRequestMethod.POST;
+						urlRequest.data = params;
+						
+						varUploadingFile.addEventListener(Event.COMPLETE, uploadFileCompleteHandler);
+						varUploadingFile.addEventListener(DataEvent.UPLOAD_COMPLETE_DATA,uploadFileDataHandler);
+						varUploadingFile.addEventListener(SecurityErrorEvent.SECURITY_ERROR,uploadFileSecurityErrorHandler);
+						varUploadingFile.addEventListener(HTTPStatusEvent.HTTP_STATUS,uploadFileHttpStatusHandler);
+						varUploadingFile.addEventListener(IOErrorEvent.IO_ERROR,uploadFileIoErrorHandler);
+						varUploadingFile.addEventListener(ProgressEvent.PROGRESS, uploadFileFileLoadingProgressHandler);
+						try
+						{
+							varUploadingFile.upload(urlRequest);
+						}
+						catch (e:Error)
+						{	
+							//catch upload button clicked again before the uploading finished
+							trace(e.toString());
+						}
+							
+						break;
+					}
+					else
+					{
+						continue;
+					}
+				}
+				trace("uploading finished");
+			}
+			
 			private function uploadFiles():void
 			{
 				
 				 				if (login.labIp.text != "")
 				{
-				serverSideScript = "http://" + login.labIp.text + "/~penn/test/upload_file.php";
+				serverSideScript = "http://" + login.labIp.text + "/upload_file.php";
 				trace(serverSideScript);
 				} 
 				transition.prb.indeterminate = false;
 				transition.prb.mode = "manual";
 				transition.labInfo.text = "正在上传视频...";
-				uploadTotalSize = varCurrentMovie.size + ((varCurrentPhoto != null && varCurrentPhoto.exists) ? varCurrentPhoto.size : 0);
+				uploadTotalSize = varUploadingMovie.size + ((varUploadingPhoto != null && varUploadingPhoto.exists) ? varUploadingPhoto.size : 0);
 				if(uploadTotalSize > 20000000)
 				{
 					Alert.show("上传文件超出限制\"10M\",请录制较短视频后重试!");
@@ -571,6 +648,14 @@
 			
 			// called after a file is uploaded
 			
+			private function uploadFileCompleteHandler(e:Event):void
+			{
+				trace("File:" + e.target.name + " uploaded successfully");
+				upload();
+			}
+			
+			// called after a file is uploaded
+			
 			private function photoCompleteHandler(e:Event):void
 			{
 				trace("File:" + e.target.name + " uploaded successfully");
@@ -579,6 +664,20 @@
 			private function movieCompleteHandler(e:Event):void
 			{
 				trace("File:" + e.target.name + " uploaded successfully");
+			}
+			
+			//called after file upload is done and Data has been returned from Server
+			
+			private function uploadFileDataHandler(e:DataEvent):void
+			{
+				trace("called after file upload is done and Data has been returned from Server:" + e.data.toString() + "dddddddddddd");
+				if (e.data.indexOf("SUCCESS") == 0)
+				{
+				}
+				else
+				{
+					Alert.show("网络繁忙，上传失败，请重试，错误代码:" + e.data);
+				}
 			}
 			
 			//called after file upload is done and Data has been returned from Server
@@ -615,6 +714,17 @@
 			
 			// called if there is an error detected by flash player browsing or uploading a file
 			
+			private function uploadFileIoErrorHandler(event:IOErrorEvent):void
+			{
+				if (!uploadError)
+				{
+					trace("ioErrorHandler:" + event.toString());
+					Alert.show("连不上服务器，请检查网络后重试");
+				}
+			}
+			
+			// called if there is an error detected by flash player browsing or uploading a file
+			
 			private function ioErrorHandler(event:IOErrorEvent):void
 			{
 				if (!uploadError)
@@ -624,11 +734,35 @@
 					transition.transitionTo();
 				}
 			}
+
+			// called if a security error
+			
+			private function uploadFileSecurityErrorHandler(event:SecurityErrorEvent):void
+			{
+				trace("securityErrorHandler:" + event.toString());
+			}
 			// called if a security error
 			
 			private function securityErrorHandler(event:SecurityErrorEvent):void
 			{
 				trace("securityErrorHandler:" + event.toString());
+			}
+
+			// server will return an http status code, code 200 means all is good
+			
+			private function uploadFileHttpStatusHandler(event:HTTPStatusEvent):void
+			{
+				trace("http status:" + event.status);
+				if (event.status != 200)
+				{
+					uploadError = true;
+					trace("event:" + event.toString());
+					Alert.show("服务器维护中，请稍候再试");
+				}
+				else
+				{
+					trace(" server will return an http status code, code 200 means all is good");
+				}
 			}
 			// server will return an http status code, code 200 means all is good
 			
@@ -648,6 +782,10 @@
 				}
 			}
 			
+			private function uploadFileFileLoadingProgressHandler(e:ProgressEvent):void
+			{
+			}
+			
 			private function fileLoadingProgressHandler(e:ProgressEvent):void
 			{
 				trace("fileLoadingProgressHandler:" + Math.round(((uploadLoadedSize + e.bytesLoaded) / uploadTotalSize) * 100) + "%");
@@ -658,29 +796,29 @@
 			private function uploadPhoto():void
 			{
 				var params:URLVariables = new URLVariables();
-				params.user = varUserName;
-				params.pass = varPassword;
+				params.user = varMobile;
+				params.pass = varUserName;
 				params.type = ".png";
 				
 				urlRequest = new URLRequest(serverSideScript);
 				urlRequest.method = URLRequestMethod.POST;
 				urlRequest.data = params;
 				
-				if (varCurrentPhoto != null && varCurrentPhoto.exists)
+				if (varUploadingPhoto != null && varUploadingPhoto.exists)
 				{					
 					// upload the file to the server side script
 					//					fileReference.addEventListener(Event.COMPLETE, photoUploadCompleteHandler);
 					//test
-					varCurrentPhoto.addEventListener(Event.COMPLETE, photoCompleteHandler);
-					varCurrentPhoto.addEventListener(DataEvent.UPLOAD_COMPLETE_DATA,photoDataHandler);
-					varCurrentPhoto.addEventListener(SecurityErrorEvent.SECURITY_ERROR,securityErrorHandler);
-					varCurrentPhoto.addEventListener(HTTPStatusEvent.HTTP_STATUS,httpStatusHandler);
-					varCurrentPhoto.addEventListener(IOErrorEvent.IO_ERROR,ioErrorHandler);
-					varCurrentPhoto.addEventListener(ProgressEvent.PROGRESS, fileLoadingProgressHandler);
+					varUploadingPhoto.addEventListener(Event.COMPLETE, photoCompleteHandler);
+					varUploadingPhoto.addEventListener(DataEvent.UPLOAD_COMPLETE_DATA,photoDataHandler);
+					varUploadingPhoto.addEventListener(SecurityErrorEvent.SECURITY_ERROR,securityErrorHandler);
+					varUploadingPhoto.addEventListener(HTTPStatusEvent.HTTP_STATUS,httpStatusHandler);
+					varUploadingPhoto.addEventListener(IOErrorEvent.IO_ERROR,ioErrorHandler);
+					varUploadingPhoto.addEventListener(ProgressEvent.PROGRESS, fileLoadingProgressHandler);
 					//test
 					try
 					{
-						varCurrentPhoto.upload(urlRequest);
+						varUploadingPhoto.upload(urlRequest);
 					}
 					catch (e:Error)
 					{	
@@ -698,15 +836,15 @@
 			private function uploadVideo():void
 			{
 				var params:URLVariables = new URLVariables();
-				params.user = varUserName;
-				params.pass = varPassword;
+				params.user = varMobile;
+				params.pass = varUserName;
 				params.type = ".flv";
 				
 				urlRequest = new URLRequest(serverSideScript);
 				urlRequest.method = URLRequestMethod.POST;
 				urlRequest.data = params;
 				
-				if (varCurrentMovie.exists)
+				if (varUploadingMovie.exists)
 				{
 					// upload the file to the server side script
 					//					fileReference.addEventListener(Event.COMPLETE, uploadCompleteHandler);
@@ -715,16 +853,16 @@
 					//					fileReference.addEventListener(DataEvent.UPLOAD_COMPLETE_DATA,fileUploadResponseHandler);
 					
 					//test
-					varCurrentMovie.addEventListener(Event.COMPLETE, movieCompleteHandler);
-					varCurrentMovie.addEventListener(DataEvent.UPLOAD_COMPLETE_DATA,movieDataHandler);
-					varCurrentMovie.addEventListener(SecurityErrorEvent.SECURITY_ERROR,securityErrorHandler);
-					varCurrentMovie.addEventListener(HTTPStatusEvent.HTTP_STATUS,httpStatusHandler);
-					varCurrentMovie.addEventListener(IOErrorEvent.IO_ERROR,ioErrorHandler);
-					varCurrentMovie.addEventListener(ProgressEvent.PROGRESS, fileLoadingProgressHandler);
+					varUploadingMovie.addEventListener(Event.COMPLETE, movieCompleteHandler);
+					varUploadingMovie.addEventListener(DataEvent.UPLOAD_COMPLETE_DATA,movieDataHandler);
+					varUploadingMovie.addEventListener(SecurityErrorEvent.SECURITY_ERROR,securityErrorHandler);
+					varUploadingMovie.addEventListener(HTTPStatusEvent.HTTP_STATUS,httpStatusHandler);
+					varUploadingMovie.addEventListener(IOErrorEvent.IO_ERROR,ioErrorHandler);
+					varUploadingMovie.addEventListener(ProgressEvent.PROGRESS, fileLoadingProgressHandler);
 					//test
 					try
 					{
-						varCurrentMovie.upload(urlRequest);
+						varUploadingMovie.upload(urlRequest);
 					}
 					catch (e:Error)
 					{	
@@ -744,14 +882,14 @@
 				transition.labInfo.text = "正在验证用户...";
 				var encoder:Base64Encoder = new Base64Encoder();
 				encoder.insertNewLines = false; 
-				encoder.encode(varUserName + ":" + varPassword);
+				encoder.encode(varMobile + ":" + varUserName);
 				
 				var htpAuth:HTTPService = new HTTPService();
 				htpAuth.requestTimeout = 5;
-				var tmpUrl:String = "http://channelwin.info/~penn/test/upload_auth.php";
+				var tmpUrl:String = "http://www.channelwin.info/upload_auth.php";
 				 				if (login.labIp.text != "")
 				{
-				tmpUrl = "http://" + login.labIp.text + "/~penn/test/upload_auth.php";
+				tmpUrl = "http://" + login.labIp.text + "/upload_auth.php";
 				} 
 				htpAuth.url = tmpUrl
 				htpAuth.method = "POST";
@@ -765,7 +903,7 @@
 			{
 				if (e.result == "Auth Success")
 				{
-					uploadFiles();
+					uploadPrepare();
 				}
 				else
 				{
@@ -812,11 +950,12 @@
 				   downSkin="@Embed(source='assets/closeActive.png')"
 				   click="this.close()"/>
 	</s:HGroup>
+	<components:HunterLoginWindow id="hunterLogin" varSYSPlayer="{this}" includeIn="HUNTER_LOGIN"/>
 	<components:LoginWindow id="login" varSYSPlayer="{this}" includeIn="LOGIN"/>
 	<components:OriginalWindow id="original" varSYSPlayer="{this}" includeIn="ORIGINAL"/>
 	<components:RecordWindow id="record" varSYSPlayer="{this}" includeIn="RECORD"/>
 	<components:PlayWindow id="play" varSYSPlayer="{this}" includeIn="PLAY"/>
 	<components:PhotoWindow id="photo" varSYSPlayer="{this}" includeIn="PHOTO"/>
-	<components:TransitionWindow id="transition" varSYSPlayer="{this}" includeIn="LOGIN,TRANSITION" visible.LOGIN="false" includeInLayout.LOGIN="false"/>
+	<components:TransitionWindow id="transition" varSYSPlayer="{this}" includeIn="HUNTER_LOGIN,TRANSITION" visible.LOGIN="false" includeInLayout.LOGIN="false"/>
 	
 </s:WindowedApplication>

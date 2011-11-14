@@ -296,7 +296,7 @@
 				startupInfo.workingDirectory = File.applicationStorageDirectory;
 				var processArgs:Vector.<String> = new Vector.<String>();	
 				
-				processArgs.push("-isync","-y","-i","tmpSound.wav", "-i","tmpVideo.flv","-vb","2000k","-vol","1024","-f","flv", varSYSPlayer.varUserName + ".flv");
+				processArgs.push("-isync","-y","-i","tmpSound.wav", "-i","tmpVideo.flv","-vb","2000k","-vol","1024","-f","flv", varSYSPlayer.varHunterUserName +  "_" + varSYSPlayer.varMobile + "_" + varSYSPlayer.varUserName + ".flv");
 				
 				startupInfo.arguments = processArgs;
 				
@@ -314,9 +314,9 @@
 			
 			public function onExit(e:NativeProcessExitEvent):void {
 				trace("Native Process Exit code: "+e.exitCode);
-				varFinalFlv = File.applicationStorageDirectory.resolvePath(varSYSPlayer.varUserName + ".flv");
+				varFinalFlv = File.applicationStorageDirectory.resolvePath(varSYSPlayer.varHunterUserName +  "_" + varSYSPlayer.varMobile + "_" + varSYSPlayer.varUserName + ".flv");
 				var varTmpDate:Date = new Date();
-				var varTmpFileName:String = varSYSPlayer.varUserName + "_" + varTmpDate.getFullYear() + "_" + (varTmpDate.getMonth() + 1) + "_" + varTmpDate.getDate() + "_" + varTmpDate.getHours() + "_" + varTmpDate.getMinutes() + "_" + varTmpDate.getSeconds() + ".flv";
+				var varTmpFileName:String = varSYSPlayer.varHunterUserName +  "_" + varSYSPlayer.varMobile + "_" + varSYSPlayer.varUserName + ".flv";
 				varFinalFlv.copyTo(File.desktopDirectory.resolvePath(varTmpFileName));
 				varSYSPlayer.setCurrentMovie(File.desktopDirectory.resolvePath(varTmpFileName));
 				varSYSPlayer.record.cleanup();

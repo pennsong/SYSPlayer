@@ -34,35 +34,39 @@
 			{
 			}
 			
-			protected function btnLogin_clickHandler(event:MouseEvent):void
+			protected function btnHunterLogin_clickHandler(event:MouseEvent):void
 			{		
 				varInfo = "登录中..."
 				var result:String;
 				//login check and return the result
-				result = loginCheck(varSYSPlayer.varMobile, varSYSPlayer.varUserName);
+				result = loginCheck(varSYSPlayer.varHunterUserName, varSYSPlayer.varHunterPassword);
 				switch(result)
 				{
-					case "failed":
-						varInfo = "手机或姓名不符合规范";
+					case "no network":
+						varInfo = "请检查网络连接!";
+						break;
+					case "wrong account info":
+						varInfo = "用户名或密码错误，请重试!";
 						break;
 					default://success
 						varInfo = "";
-						varSYSPlayer.varAuthInfo = "猎头:" + varSYSPlayer.varHunterUserName  + " 人才:" + varSYSPlayer.varUserName;
+						varSYSPlayer.varUserCompany = result;
+						varSYSPlayer.varAuthInfo = "内容授权" + varSYSPlayer.varUserCompany  + ":" + varSYSPlayer.varHunterUserName + "使用";
 						varSYSPlayer.varCurrentMovie = null;
-						dispatchEvent(new ControlEvent("controlButton", "btnLogin"));
+						dispatchEvent(new ControlEvent("controlButton", "btnHunterLogin"));
 						break;
 				}
 			}
 			
-			private function loginCheck(varMobile:String, varUserName:String):String
+			private function loginCheck(varHunterUserName:String, varHunterPassword:String):String
 			{
-				if ((varMobile.indexOf("_") != -1) || (varUserName.indexOf("_") != -1))
+				if (varHunterUserName == null || varHunterUserName == "" || (varHunterUserName != varHunterPassword))
 				{
-					return "failed";
+					return "wrong account info";
 				}
 				else
 				{
-					return "success";
+					return "HR公司";
 				}
 			}
 		]]>
@@ -79,7 +83,7 @@
 				verticalAlign="middle"
 				gap="2"/>
 		</s:layout>
-		<s:Label styleName="commonColor big" text="新建人才"/>
+		<s:Label styleName="commonColor big" text="登录"/>
 	</s:BorderContainer>
 	<s:BorderContainer  backgroundAlpha="0" borderVisible="false">
 		
@@ -90,17 +94,18 @@
 				gap="2"/>
 		</s:layout>
 		<s:HGroup verticalAlign="middle">		
-			<s:Label color="#FFFFFF" styleName="warningColor small" text="手机:"/>
+			<s:Label color="#FFFFFF" styleName="warningColor small" text="帐号:"/>
 			<s:TextInput id="txiAccount" y="-3" width="72" height="19" borderColor="#FFFFFF"
-						 text="@{varSYSPlayer.varMobile}"/>
+						 text="@{varSYSPlayer.varHunterUserName}"/>
 		</s:HGroup>
 		<s:HGroup verticalAlign="middle">	
-			<s:Label color="#FFFFFF" styleName="warningColor small" text="姓名:"/>
+			<s:Label color="#FFFFFF" styleName="warningColor small" text="密码:"/>
 			<s:TextInput id="txiPassword" width="72" height="19" borderColor="#FFFFFF"
-						 text="@{varSYSPlayer.varUserName}"/>
+						 displayAsPassword="true" text="@{varSYSPlayer.varHunterPassword}"/>
 		</s:HGroup>	
 		<s:Label id="labInfo" styleName="commonColor small warningColor" text="{varInfo}"/>
-		<s:Button id="btnLogin" styleName="login" label="新建" click="btnLogin_clickHandler(event)"/>
+		<s:Button id="btnHunterLogin" styleName="login" label="登录" click="btnHunterLogin_clickHandler(event)"/>
 		<s:TextInput id="labIp" borderVisible="false" color="#FFFFFF" contentBackgroundColor="#000000"/>
 	</s:BorderContainer>
+	<s:Label color="#FFFFFF" text="version:2011/08/21_18:51 cw"/>
 </s:BorderContainer>
