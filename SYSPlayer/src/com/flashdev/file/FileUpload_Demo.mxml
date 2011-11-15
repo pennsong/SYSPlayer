@@ -113,7 +113,7 @@
 				//var uploadingFolder:File = new File("/Users/penn/Library/Preferences/SYSplayer/Local Store/");
 				_refAddFiles=uploadingFolder.getDirectoryListing();
 				_refAddFiles.sort();
-				var arrFoundList:Array = new Array();
+/* 				var arrFoundList:Array = new Array(); */
 				
 				if (_refAddFiles.length >= 1) {				
 					for (var k:Number = 0; k < _refAddFiles.length; k++) {
@@ -125,41 +125,34 @@
 								size:formatFileSize(_refAddFiles[k].size),
 								file:_refAddFiles[k],
 								status: ""});
-						else 
-							arrFoundList.push(_refAddFiles[k].name + " " + validStatus);
+/* 						else 
+							arrFoundList.push(_refAddFiles[k].name + " " + validStatus); */
 					}
 					listFiles.dataProvider = _arrUploadFiles;
 					
 					if (_arrUploadFiles && _arrUploadFiles.length > 0)
 						listFiles.selectedIndex = _arrUploadFiles.length - 1;
 					else
-						listFiles.selectedIndex = -1;
+						listFiles.selectedIndex = 0;
 				}				
-				if (arrFoundList.length >= 1) {
+/* 				if (arrFoundList.length >= 1) {
 					Alert.show("The file(s) below are not added to the list: \n\n• " + arrFoundList.join("\n• "), "Information!");
-				}
+				} */
 				updateProgBar();
 				scrollFiles();
 				uploadCheck();
 			}
 			
 			private function validateFile(fileRef:FileReference):String {
-				if (_extensions && _extensions.length > 0) {
-					var ext:String = fileRef.type;
-					
-					if (ext)
-						ext = ext.toUpperCase();
-					else
-						ext = fileRef.name.slice(fileRef.name.length - 4).toUpperCase();
-					
-					for (var i:int = 0; i < _extensions.length; i++)
-						if (ext == _extensions[i])
-							break;
-					if (i == _extensions.length)
-						return "*Type not supported";
+				var tmpRegex:RegExp = /[A-Za-z0-9\u4e00-\u9fa5]{5,8}_[0-9]{11}_[\u4e00-\u9fa5]{2,5}\.(png|flv)/;
+				if (!tmpRegex.test(fileRef.name))
+				{
+					return "not included";
 				}
-				
-				return fileRef.size <= _maxSize? "":"*Too big (" + formatFileSize(fileRef.size) + ")";
+				else
+				{
+					return "";
+				}
 			}
 			
 			// Called to format number to file size

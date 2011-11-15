@@ -61,7 +61,9 @@
 			
 			private function loginCheck(varMobile:String, varUserName:String):String
 			{
-				if (varMobile == "" || varMobile == null || varUserName == "" || varUserName == null || (varMobile.indexOf("_") != -1) || (varUserName.indexOf("_") != -1))
+				var mobileRegex:RegExp = /^[0-9]{11}$/;
+				var userNameRegex:RegExp = /^[\u4e00-\u9fa5]{2,5}$/;
+				if (!mobileRegex.test(varMobile) || !userNameRegex.test(varUserName))
 				{
 					return "failed";
 				}
@@ -96,12 +98,12 @@
 		</s:layout>
 		<s:HGroup verticalAlign="middle">		
 			<s:Label color="#FFFFFF" styleName="warningColor small" text="手机:"/>
-			<s:TextInput id="txiAccount" y="-3" width="72" height="19" borderColor="#FFFFFF"
+			<s:TextInput id="txiAccount" y="-3" width="90" height="19" borderColor="#FFFFFF"
 						 text="@{varSYSPlayer.varMobile}"/>
 		</s:HGroup>
 		<s:HGroup verticalAlign="middle">	
 			<s:Label color="#FFFFFF" styleName="warningColor small" text="姓名:"/>
-			<s:TextInput id="txiPassword" width="72" height="19" borderColor="#FFFFFF"
+			<s:TextInput id="txiPassword" width="90" height="19" borderColor="#FFFFFF"
 						 text="@{varSYSPlayer.varUserName}"/>
 		</s:HGroup>	
 		<s:Label id="labInfo" styleName="commonColor small warningColor" text="{varInfo}"/>

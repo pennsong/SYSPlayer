@@ -124,6 +124,7 @@
 			private var varErrOutput:String;
 			
 			//interactive var
+			public var varMaxFileSize = 20971520;
 			public var varNetStream:NetStream;
 			[Bindable]
 			public var varflvHeight:int = 240;

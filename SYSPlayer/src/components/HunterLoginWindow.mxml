@@ -47,8 +47,8 @@
 					case "no network":
 						varInfo = "请检查网络连接!";
 						break;
-					case "wrong account info":
-						varInfo = "用户名或密码错误，请重试!";
+					case "format error":
+						varInfo = "用户名或密码格式错误，请重试!";
 						break;
 					default://success
 						varInfo = "";
@@ -62,15 +62,16 @@
 			
 			private function loginCheck(varHunterUserName:String, varHunterPassword:String):String
 			{
-				var tmpRegex:RegExp = /[A-Za-z0-9]{4,8}/;
-				if (varHunterUserName == null || varHunterUserName == "" || (varHunterUserName != varHunterPassword) || !tmpRegex.test(varHunterUserName))
+				var tmpRegex:RegExp = /^[A-Za-z0-9\u4e00-\u9fa5]{5,8}$/;
+
+ 				if (!tmpRegex.test(varHunterUserName) || !tmpRegex.test(varHunterPassword))
 				{
-					return "wrong account info";
+					return "format error";
 				}
 				else
 				{
 					return "HR公司";
-				}
+				} 
 			}
 		]]>
 	</fx:Script>

@@ -24,6 +24,7 @@
 			
 			import flashx.textLayout.formats.FormatValue;
 			
+			import mx.controls.Alert;
 			import mx.formatters.Formatter;
 			
 			private var varInfo:String;
@@ -315,10 +316,20 @@
 			public function onExit(e:NativeProcessExitEvent):void {
 				trace("Native Process Exit code: "+e.exitCode);
 				varFinalFlv = File.applicationStorageDirectory.resolvePath(varSYSPlayer.varHunterUserName +  "_" + varSYSPlayer.varMobile + "_" + varSYSPlayer.varUserName + ".flv");
-				var varTmpDate:Date = new Date();
-				var varTmpFileName:String = varSYSPlayer.varHunterUserName +  "_" + varSYSPlayer.varMobile + "_" + varSYSPlayer.varUserName + ".flv";
-				varFinalFlv.copyTo(File.desktopDirectory.resolvePath(varTmpFileName), true);
-				varSYSPlayer.setCurrentMovie(File.desktopDirectory.resolvePath(varTmpFileName));
+
+				if (varFinalFlv.size > varSYSPlayer.varMaxFileSize)
+				{				
+					var varTmpDate:Date = new Date();
+					var varTmpFileName:String = varSYSPlayer.varHunterUserName +  "_" + varSYSPlayer.varMobile + "_" + varSYSPlayer.varUserName + ".flv";
+					varFinalFlv.moveTo(File.desktopDirectory.resolvePath(varTmpFileName), true);
+					varSYSPlayer.setCurrentMovie(File.desktopDirectory.resolvePath(varTmpFileName));
+					Alert.show("录制文件太大，超出上传限制，请缩短时间重新录制，此次录制文件已经存放在桌面上", "文件大小超出上传限制");
+				}
+				else
+				{
+					varSYSPlayer.setCurrentMovie(varFinalFlv);
+				}
+
 				varSYSPlayer.record.cleanup();
 				varSYSPlayer.transition.transitionTo();
 			}
