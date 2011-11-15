@@ -18,6 +18,8 @@
 	<fx:Script>
 		<![CDATA[
 			import events.ControlEvent;
+			
+			import mx.validators.StringValidator;
 			[Bindable]
 			private var varInfo:String;
 			
@@ -60,7 +62,8 @@
 			
 			private function loginCheck(varHunterUserName:String, varHunterPassword:String):String
 			{
-				if (varHunterUserName == null || varHunterUserName == "" || (varHunterUserName != varHunterPassword))
+				var tmpRegex:RegExp = /[A-Za-z0-9]{4,8}/;
+				if (varHunterUserName == null || varHunterUserName == "" || (varHunterUserName != varHunterPassword) || !tmpRegex.test(varHunterUserName))
 				{
 					return "wrong account info";
 				}

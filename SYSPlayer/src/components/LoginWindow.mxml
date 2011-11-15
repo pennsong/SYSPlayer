@@ -61,7 +61,7 @@
 			
 			private function loginCheck(varMobile:String, varUserName:String):String
 			{
-				if ((varMobile.indexOf("_") != -1) || (varUserName.indexOf("_") != -1))
+				if (varMobile == "" || varMobile == null || varUserName == "" || varUserName == null || (varMobile.indexOf("_") != -1) || (varUserName.indexOf("_") != -1))
 				{
 					return "failed";
 				}

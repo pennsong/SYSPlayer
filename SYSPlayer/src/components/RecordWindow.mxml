@@ -317,7 +317,7 @@
 				varFinalFlv = File.applicationStorageDirectory.resolvePath(varSYSPlayer.varHunterUserName +  "_" + varSYSPlayer.varMobile + "_" + varSYSPlayer.varUserName + ".flv");
 				var varTmpDate:Date = new Date();
 				var varTmpFileName:String = varSYSPlayer.varHunterUserName +  "_" + varSYSPlayer.varMobile + "_" + varSYSPlayer.varUserName + ".flv";
-				varFinalFlv.copyTo(File.desktopDirectory.resolvePath(varTmpFileName));
+				varFinalFlv.copyTo(File.desktopDirectory.resolvePath(varTmpFileName), true);
 				varSYSPlayer.setCurrentMovie(File.desktopDirectory.resolvePath(varTmpFileName));
 				varSYSPlayer.record.cleanup();
 				varSYSPlayer.transition.transitionTo();

@@ -123,6 +123,11 @@
 				{
 					varSYSPlayer.play.init();
 				}
+				else if (varToState == "UPLOAD")
+				{
+					if (varSYSPlayer.upload != null)
+					varSYSPlayer.upload.uploader.initCom();
+				}
 				
 				if (varToState == "ORIGINAL_FILESELECTED" || varToState == "ORIGINAL_FILEUPLOADED" || varToState == "ORIGINAL_FILECONVERT")
 				{

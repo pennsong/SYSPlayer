@@ -117,7 +117,7 @@
 					shtPlay.visible = false;
 				}
  				shtPhoto.includeInLayout = true; 
-				if (varSYSPlayer.varMovieByteArray != null)
+/* 				if (varSYSPlayer.varMovieByteArray != null)
 				{
 					shtUpload.includeInLayout = true;
 					shtUpload.visible = true;
@@ -127,7 +127,7 @@
 					shtUpload.includeInLayout = false;
 					shtUpload.visible = false;
 				}
-				shtOpen.includeInLayout = true;
+				shtOpen.includeInLayout = true; */
 			}
 			
 			public function resetControlButton():void
@@ -179,7 +179,7 @@
 	
 	<s:HGroup height="100%" width="100%">
 		<s:VGroup width="45%" height="100%" horizontalAlign="center" verticalAlign="middle">
-			<s:Label styleName="commonColor middle" text="所选视频"/>
+			<s:Label styleName="commonColor middle" text="最新视频"/>
 			<s:BorderContainer width="80" height="60" borderVisible="false">
 				<s:VideoDisplay id="vidVideoPreview" width="80" height="60"/>
 				<s:Image id="imgVideoPreviewEmpty" width="80" height="60" source="assets/emptyVideo.png"/>
@@ -226,7 +226,7 @@
 						   click="dispatchEvent(new ControlEvent('controlButton', 'btnPhoto'))"/>
 				<s:Label styleName="commonColor middle" text="拍摄照片"/>
 			</s:HGroup>
-			<s:HGroup id="shtUpload" verticalAlign="middle">				
+<!--			<s:HGroup id="shtUpload" verticalAlign="middle">				
 				<mx:Button label="" width="25" height="25"
 						   upSkin="@Embed(source='assets/uploadEnable.png')"
 						   overSkin="@Embed(source='assets/uploadActive.png')"
@@ -245,7 +245,7 @@
 						   buttonMode="true"
 						   click="dispatchEvent(new ControlEvent('controlButton', 'btnOpen'))"/>
 				<s:Label styleName="commonColor middle" text="播放其他视频"/>
-			</s:HGroup>
+			</s:HGroup>-->
 		</s:VGroup>
 	</s:HGroup>
 	<s:HGroup horizontalAlign="center" verticalAlign="middle" width="100%">

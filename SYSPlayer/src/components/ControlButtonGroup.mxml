@@ -54,8 +54,8 @@
 			
 			public function switchConvert(onOff:Boolean):void
 			{
-				btnConvert.enabled = onOff;
-				btnConvert.buttonMode = onOff;
+/* 				btnConvert.enabled = onOff;
+				btnConvert.buttonMode = onOff; */
 			}
 			
 			public function switchStop(onOff:Boolean):void
@@ -66,8 +66,8 @@
 			
 			public function switchUpload(onOff:Boolean):void
 			{
-				btnUpload.enabled = onOff;
-				btnUpload.buttonMode = onOff;
+/* 				btnUpload.enabled = onOff;
+				btnUpload.buttonMode = onOff; */
 			}
 			
 			public function switchLogout(onOff:Boolean):void
@@ -78,8 +78,8 @@
 			
 			public function switchOpen(onOff:Boolean):void
 			{
-				btnOpen.enabled = onOff;
-				btnOpen.buttonMode = onOff;
+/* 				btnOpen.enabled = onOff;
+				btnOpen.buttonMode = onOff; */
 			}
 			
 			
@@ -148,14 +148,14 @@
 				   buttonMode="true"
 				   click="btnLogout_clickHandler(event)"
 				   toolTip="退出"/>
-		<mx:Button id="btnConvert" width="25" height="25"
+<!--		<mx:Button id="btnConvert" width="25" height="25"
 				   upSkin="@Embed(source='assets/convertEnable.png')"
 				   overSkin="@Embed(source='assets/convertActive.png')"
 				   downSkin="@Embed(source='assets/convertEnable.png')"
 				   disabledSkin="@Embed(source='assets/convertDisable.png')"
 				   buttonMode="true"
 				   click="btnConvert_clickHandler(event)"
-				   toolTip="转换视频"/>
+				   toolTip="转换视频"/>-->
 		<mx:Button id="btnPhoto" width="25" height="25"
 				   upSkin="@Embed(source='assets/photoEnable.png')"
 				   overSkin="@Embed(source='assets/photoActive.png')"
@@ -199,7 +199,7 @@
 				   />
 	</s:HGroup>
 	<s:HGroup>
-		<mx:Button id="btnOpen" width="25" height="25"
+<!--		<mx:Button id="btnOpen" width="25" height="25"
 				   upSkin="@Embed(source='assets/openEnable.png')"
 				   overSkin="@Embed(source='assets/openActive.png')"
 				   downSkin="@Embed(source='assets/openEnable.png')"
@@ -214,7 +214,7 @@
 				   disabledSkin="@Embed(source='assets/uploadDisable.png')"
 				   buttonMode="true"
 				   click="btnUpload_clickHandler(event)"
-				   toolTip="上传"/>
+				   toolTip="上传"/>-->
 	</s:HGroup>
 	
 	

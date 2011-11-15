@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:Panel xmlns:mx="http://www.adobe.com/2006/mxml" xmlns:com="*"
-	layout="vertical" width="100%" minWidth="322" height="281" minHeight="281"
-	title="Upload Files" creationComplete="initCom()" xmlns:assets="com.flashdev.file.assets.*">
+<mx:Panel xmlns:mx="http://www.adobe.com/2006/mxml"
+		  xmlns:com="*"
+		  xmlns:assets="com.flashdev.file.assets.*"
+		  width="100%" height="281" minWidth="322" minHeight="281" chromeColor="#000000"
+		  color="#AAAAAA" creationComplete="initCom()" layout="vertical" title="文件上传列表">
 	
 	<mx:Metadata>
 		[Event(name="uploadComplete", type="flash.events.Event")]
@@ -89,8 +91,8 @@
 			}
 			
 			// Initalize
-			private function initCom():void {
-				_arrUploadFiles = new Array();				
+			public function initCom():void {
+				onSelectFile();
 				enableUI();
 				uploadCheck();
 			}
@@ -101,12 +103,12 @@
 //				_refAddFiles.addEventListener(Event.SELECT, onSelectFile);
 //				_refAddFiles.browse(_typeList);
 				initCom();
-				onSelectFile();
 				startUpload();
 			}
 			
 			// Called when a file is selected
 			private function onSelectFile():void {
+				_arrUploadFiles = new Array();	
 				var uploadingFolder:File = File.applicationStorageDirectory;
 				//var uploadingFolder:File = new File("/Users/penn/Library/Preferences/SYSplayer/Local Store/");
 				_refAddFiles=uploadingFolder.getDirectoryListing();
@@ -177,8 +179,6 @@
 			}
 	
 			private function removeFiles():void {
-				clearUpload();
-				dispatchEvent(new Event("uploadCancel"));
 				dispatchEvent(new ControlEvent("controlButton", "btnCancel"));
 			}
 			
@@ -220,10 +220,10 @@
 			// Called to check if there is at least one file to upload
 			private function uploadCheck():void {
 				if (_arrUploadFiles.length == 0) {
-					btnUpload.enabled = false;
+					btnAdd.enabled = false;
 					//listFiles.verticalScrollPolicy = "off";
 				} else {
-					btnUpload.enabled = true;
+					btnAdd.enabled = true;
 					//listFiles.verticalScrollPolicy = "on";
 				}
 			}
@@ -232,7 +232,6 @@
 			private function disableUI():void {
 				btnAdd.enabled = false;
 				btnRemove.enabled = false;
-				btnUpload.enabled = false;
 				btnCancel.enabled = true;
 				listFiles.enabled = false;
 				//listFiles.verticalScrollPolicy = "off";
@@ -242,7 +241,6 @@
 			private function enableUI():void {
 				btnAdd.enabled = true;
 				btnRemove.enabled = true;
-				btnUpload.enabled = true;
 				btnCancel.enabled = false;
 				listFiles.enabled = true;
 				//listFiles.verticalScrollPolicy = "on";
@@ -400,7 +398,6 @@
 		<mx:State name="mini">
 			<mx:SetProperty name="height" value="60"/>
 			<mx:SetProperty name="minHeight" value="60"/>
-			<mx:SetStyle target="{btnView}" name="icon" value="@Embed('assets/application_put.png')"/>
 		</mx:State>
 	</mx:states>
 	
@@ -415,10 +412,10 @@
 			allowMultipleSelection="true" 
 			draggableColumns="false" resizableColumns="false" sortableColumns="false">
 			<mx:columns>
-				<mx:DataGridColumn headerText="#" dataField="no" width="30"/>
-				<mx:DataGridColumn headerText="File" dataField="name" wordWrap="true"/>
-				<mx:DataGridColumn headerText="Size" dataField="size" width="75" textAlign="right" paddingRight="5" />
-				<mx:DataGridColumn headerText="Status" dataField="status">
+				<mx:DataGridColumn headerText="序号" dataField="no" width="35"/>
+				<mx:DataGridColumn headerText="文件" dataField="name" wordWrap="true"/>
+				<mx:DataGridColumn headerText="大小" dataField="size" width="75" textAlign="right" paddingRight="5" />
+				<mx:DataGridColumn headerText="状态" dataField="status">
 					<mx:itemRenderer>
 						<mx:Component>
 							<assets:StatusBar />
@@ -429,11 +426,26 @@
 		</mx:DataGrid>
 	</mx:Canvas>
 	<mx:ControlBar horizontalAlign="center" verticalAlign="middle">
-		<mx:Button id="btnAdd" toolTip="Add file(s)" click="addFiles()" icon="@Embed('assets/add.png')" width="26"/>
-		<mx:Button id="btnRemove" toolTip="Remove file(s)" click="removeFiles()" icon="@Embed('assets/delete.png')" width="26"/>
+		<mx:Button id="btnAdd" toolTip="上传" click="addFiles()"
+				   upSkin="@Embed(source='assets/uploadEnable.png')"
+				   overSkin="@Embed(source='assets/uploadActive.png')"
+				   downSkin="@Embed(source='assets/uploadEnable.png')"
+				   disabledSkin="@Embed(source='assets/uploadDisable.png')"
+				   width="25"
+				   height="25"/>
+		<mx:Button id="btnRemove" toolTip="返回" click="removeFiles()"
+				   upSkin="@Embed(source='assets/logoutEnable.png')"
+				   overSkin="@Embed(source='assets/logoutActive.png')"
+				   downSkin="@Embed(source='assets/logoutEnable.png')"
+				   disabledSkin="@Embed(source='assets/logoutDisable.png')"
+				   width="25"
+				   height="25"/>
 		<mx:ProgressBar id="progBar" mode="manual" label="" labelPlacement="center" width="100%"/>
-		<mx:Button id="btnCancel" toolTip="Cancel upload" icon="@Embed('assets/cancel2.png')" width="26" click="onUploadCanceled()"/>
-		<mx:Button label="Upload" toolTip="Upload file(s)" id="btnUpload" click="startUpload()" icon="@Embed('assets/bullet_go.png')"/>
-		<mx:Button id="btnView" toolTip="Show/Hide file(s)" icon="@Embed('assets/application_get.png')" width="26" click="changeView()"/>
+		<mx:Button id="btnCancel" toolTip="停止上传"
+				   upSkin="@Embed(source='assets/stopEnable.png')"
+				   overSkin="@Embed(source='assets/stopActive.png')"
+				   downSkin="@Embed(source='assets/stopEnable.png')"
+				   disabledSkin="@Embed(source='assets/stopDisable.png')"
+				   width="25" height="25" click="onUploadCanceled()"/>
 	</mx:ControlBar>	
 </mx:Panel>
