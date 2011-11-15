@@ -42,6 +42,11 @@
 				{
 					transitionTo();
 				}
+				else if (this.varFromState == "UPLOAD")
+				{
+					varSYSPlayer.login.cleanup();
+					transitionTo();
+				}
 				else if (this.varFromState == "LOGIN")
 				{
 					varSYSPlayer.login.cleanup();

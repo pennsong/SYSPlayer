@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:ViewStack xmlns:mx="http://www.adobe.com/2006/mxml" dataChange="onDataChange()">
+	<mx:Script>
+		<![CDATA[
+			private function onDataChange():void {
+				if (data) {
+					var status:String = data.status;
+					
+					if (String(status).indexOf(":") > -1) {
+						selectedIndex = 1;
+						validateNow();
+						progressBar.label = status;
+						var arrData:Array = status.split(":");
+						var value:Number = arrData[1].substr(1, arrData[1].length - 2);
+						progressBar.setProgress(value, 100);
+					}	else {
+						selectedIndex = 0;
+						validateNow();
+						
+						txtStatus.setStyle("color", "#000000");
+						
+						var xml:XML = new XML(status);
+						var successStatus:String = xml.success;
+						
+						if (successStatus != "") {
+							if (successStatus == "true")
+								txtStatus.text = "Succesfully Uploaded";
+							else {
+								txtStatus.setStyle("color", "#FF0000");
+								txtStatus.text = "Error: " + xml.error;
+							}
+						}	else
+							txtStatus.text = status;
+						txtStatus.toolTip = txtStatus.text;
+					}
+				}
+			}
+		]]>
+	</mx:Script>
+	<mx:Canvas width="100%">
+		<mx:Text id="txtStatus" width="100%" paddingLeft="5"/>
+	</mx:Canvas>
+	<mx:Canvas width="100%">
+		<mx:ProgressBar id="progressBar" minimum="0" maximum="100" mode="manual" labelPlacement="center" width="100%" 
+			/>	
+	</mx:Canvas>
+</mx:ViewStack>

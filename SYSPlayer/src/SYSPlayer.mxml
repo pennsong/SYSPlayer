@@ -16,6 +16,7 @@
 		<s:State name="PLAY"/>
 		<s:State name="PHOTO"/>
 		<s:State name="TRANSITION"/>
+		<s:State name="UPLOAD"/>
 	</s:states>
 	<fx:Metadata>
 		[Event(name="controlButton", type="events.ControlEvent")]
@@ -222,6 +223,13 @@
 				trace("d:" + e.type + ":" + e.strButton);
 				switch(currentState)
 				{
+					case "UPLOAD":
+					{
+						if (e.strButton == "btnCancel")
+						{
+							transition.trasitionProcess("UPLOAD", "LOGIN");
+						}
+					}
 					case "HUNTER_LOGIN":
 					{
 						if (e.strButton == "btnHunterLogin")
@@ -236,6 +244,11 @@
 						{
 							transition.trasitionProcess("LOGIN", "ORIGINAL");
 						}
+						else if (e.strButton == "btnUpload")
+						{
+							transition.trasitionProcess("LOGIN", "UPLOAD");
+						}
+							
 						break;
 					}
 					case "ORIGINAL":
@@ -563,320 +576,7 @@
 				}
 				return checkSec;
 			}
-			
-			private function uploadPrepare():void
-			{
-				var uploadingFolder:File = File.applicationStorageDirectory;
-				uploadingList=uploadingFolder.getDirectoryListing();
-				uploadingList.sort();
-				upload();
-			}
-			
-			private function upload():void
-			{
-				var tmpRegex:RegExp = /.+_.+_.+/;
-				var tmpFile:File;
-				while (tmpFile = uploadingList.shift())
-				{
-					if (tmpRegex.test(tmpFile.name))
-					{
-						varUploadingFile = tmpFile;
-						
-						var params:URLVariables = new URLVariables();
-						params.user = varMobile;
-						params.pass = varUserName;
-						params.type = ".png";
-						
-						if (login.labIp.text != "")
-						{
-							serverSideScript = "http://" + login.labIp.text + "/upload_file.php";
-						}
-						
-						urlRequest = new URLRequest(serverSideScript);
-						urlRequest.method = URLRequestMethod.POST;
-						urlRequest.data = params;
-						
-						varUploadingFile.addEventListener(Event.COMPLETE, uploadFileCompleteHandler);
-						varUploadingFile.addEventListener(DataEvent.UPLOAD_COMPLETE_DATA,uploadFileDataHandler);
-						varUploadingFile.addEventListener(SecurityErrorEvent.SECURITY_ERROR,uploadFileSecurityErrorHandler);
-						varUploadingFile.addEventListener(HTTPStatusEvent.HTTP_STATUS,uploadFileHttpStatusHandler);
-						varUploadingFile.addEventListener(IOErrorEvent.IO_ERROR,uploadFileIoErrorHandler);
-						varUploadingFile.addEventListener(ProgressEvent.PROGRESS, uploadFileFileLoadingProgressHandler);
-						try
-						{
-							varUploadingFile.upload(urlRequest);
-						}
-						catch (e:Error)
-						{	
-							//catch upload button clicked again before the uploading finished
-							trace(e.toString());
-						}
-							
-						break;
-					}
-					else
-					{
-						continue;
-					}
-				}
-				trace("uploading finished");
-			}
-			
-			private function uploadFiles():void
-			{
-				
-				 				if (login.labIp.text != "")
-				{
-				serverSideScript = "http://" + login.labIp.text + "/upload_file.php";
-				trace(serverSideScript);
-				} 
-				transition.prb.indeterminate = false;
-				transition.prb.mode = "manual";
-				transition.labInfo.text = "正在上传视频...";
-				uploadTotalSize = varUploadingMovie.size + ((varUploadingPhoto != null && varUploadingPhoto.exists) ? varUploadingPhoto.size : 0);
-				if(uploadTotalSize > 20000000)
-				{
-					Alert.show("上传文件超出限制\"10M\",请录制较短视频后重试!");
-					transition.transitionTo();
-				}
-				else
-				{
-					uploadLoadedSize = 0;
-					uploadPhoto();
-				}
-			}
-			
-			// called after a file is uploaded
-			
-			private function uploadFileCompleteHandler(e:Event):void
-			{
-				trace("File:" + e.target.name + " uploaded successfully");
-				upload();
-			}
-			
-			// called after a file is uploaded
-			
-			private function photoCompleteHandler(e:Event):void
-			{
-				trace("File:" + e.target.name + " uploaded successfully");
-			}
-			
-			private function movieCompleteHandler(e:Event):void
-			{
-				trace("File:" + e.target.name + " uploaded successfully");
-			}
-			
-			//called after file upload is done and Data has been returned from Server
-			
-			private function uploadFileDataHandler(e:DataEvent):void
-			{
-				trace("called after file upload is done and Data has been returned from Server:" + e.data.toString() + "dddddddddddd");
-				if (e.data.indexOf("SUCCESS") == 0)
-				{
-				}
-				else
-				{
-					Alert.show("网络繁忙，上传失败，请重试，错误代码:" + e.data);
-				}
-			}
-			
-			//called after file upload is done and Data has been returned from Server
-			
-			private function photoDataHandler(e:DataEvent):void
-			{
-				trace("called after file upload is done and Data has been returned from Server:" + e.data.toString() + "dddddddddddd");
-				if (e.data.indexOf("SUCCESS") == 0)
-				{
-					uploadLoadedSize += varCurrentPhoto.size;
-					uploadVideo();
-				}
-				else
-				{
-					Alert.show("网络繁忙，上传失败，请重试，错误代码:" + e.data);
-					transition.transitionTo();
-				}
-			}
-			
-			private function movieDataHandler(e:DataEvent):void
-			{
-				trace("called after file upload is done and Data has been returned from Server:" + e.data.toString() + "dddddddddddd");
-				if (e.data.indexOf("SUCCESS") == 0)
-				{
-					transition.labInfo.text = "文件上传成功！";
-					setTimeout(transition.transitionTo, 3000);
-				}
-				else
-				{
-					Alert.show("网络繁忙，上传失败，请重试，错误代码:" + e.data);
-					transition.transitionTo();
-				}
-			}
-			
-			// called if there is an error detected by flash player browsing or uploading a file
-			
-			private function uploadFileIoErrorHandler(event:IOErrorEvent):void
-			{
-				if (!uploadError)
-				{
-					trace("ioErrorHandler:" + event.toString());
-					Alert.show("连不上服务器，请检查网络后重试");
-				}
-			}
-			
-			// called if there is an error detected by flash player browsing or uploading a file
-			
-			private function ioErrorHandler(event:IOErrorEvent):void
-			{
-				if (!uploadError)
-				{
-					trace("ioErrorHandler:" + event.toString());
-					Alert.show("连不上服务器，请检查网络后重试");
-					transition.transitionTo();
-				}
-			}
-
-			// called if a security error
-			
-			private function uploadFileSecurityErrorHandler(event:SecurityErrorEvent):void
-			{
-				trace("securityErrorHandler:" + event.toString());
-			}
-			// called if a security error
-			
-			private function securityErrorHandler(event:SecurityErrorEvent):void
-			{
-				trace("securityErrorHandler:" + event.toString());
-			}
-
-			// server will return an http status code, code 200 means all is good
-			
-			private function uploadFileHttpStatusHandler(event:HTTPStatusEvent):void
-			{
-				trace("http status:" + event.status);
-				if (event.status != 200)
-				{
-					uploadError = true;
-					trace("event:" + event.toString());
-					Alert.show("服务器维护中，请稍候再试");
-				}
-				else
-				{
-					trace(" server will return an http status code, code 200 means all is good");
-				}
-			}
-			// server will return an http status code, code 200 means all is good
-			
-			private function httpStatusHandler(event:HTTPStatusEvent):void
-			{
-				trace("http status:" + event.status);
-				if (event.status != 200)
-				{
-					uploadError = true;
-					trace("event:" + event.toString());
-					Alert.show("服务器维护中，请稍候再试");
-					transition.transitionTo();
-				}
-				else
-				{
-					trace(" server will return an http status code, code 200 means all is good");
-				}
-			}
-			
-			private function uploadFileFileLoadingProgressHandler(e:ProgressEvent):void
-			{
-			}
-			
-			private function fileLoadingProgressHandler(e:ProgressEvent):void
-			{
-				trace("fileLoadingProgressHandler:" + Math.round(((uploadLoadedSize + e.bytesLoaded) / uploadTotalSize) * 100) + "%");
-				transition.prb.setProgress(uploadLoadedSize + e.bytesLoaded, uploadTotalSize);
-				transition.labPercent.text = "" + Math.round(((uploadLoadedSize + e.bytesLoaded) / uploadTotalSize) * 100) + "%";
-			}
-			
-			private function uploadPhoto():void
-			{
-				var params:URLVariables = new URLVariables();
-				params.user = varMobile;
-				params.pass = varUserName;
-				params.type = ".png";
-				
-				urlRequest = new URLRequest(serverSideScript);
-				urlRequest.method = URLRequestMethod.POST;
-				urlRequest.data = params;
-				
-				if (varUploadingPhoto != null && varUploadingPhoto.exists)
-				{					
-					// upload the file to the server side script
-					//					fileReference.addEventListener(Event.COMPLETE, photoUploadCompleteHandler);
-					//test
-					varUploadingPhoto.addEventListener(Event.COMPLETE, photoCompleteHandler);
-					varUploadingPhoto.addEventListener(DataEvent.UPLOAD_COMPLETE_DATA,photoDataHandler);
-					varUploadingPhoto.addEventListener(SecurityErrorEvent.SECURITY_ERROR,securityErrorHandler);
-					varUploadingPhoto.addEventListener(HTTPStatusEvent.HTTP_STATUS,httpStatusHandler);
-					varUploadingPhoto.addEventListener(IOErrorEvent.IO_ERROR,ioErrorHandler);
-					varUploadingPhoto.addEventListener(ProgressEvent.PROGRESS, fileLoadingProgressHandler);
-					//test
-					try
-					{
-						varUploadingPhoto.upload(urlRequest);
-					}
-					catch (e:Error)
-					{	
-						//catch upload button clicked again before the uploading finished
-						trace(e.toString());
-					}
 					
-				}
-				else
-				{
-					uploadVideo();
-				}
-			}
-			
-			private function uploadVideo():void
-			{
-				var params:URLVariables = new URLVariables();
-				params.user = varMobile;
-				params.pass = varUserName;
-				params.type = ".flv";
-				
-				urlRequest = new URLRequest(serverSideScript);
-				urlRequest.method = URLRequestMethod.POST;
-				urlRequest.data = params;
-				
-				if (varUploadingMovie.exists)
-				{
-					// upload the file to the server side script
-					//					fileReference.addEventListener(Event.COMPLETE, uploadCompleteHandler);
-					//					fileReference.addEventListener(ProgressEvent.PROGRESS, fileLoadingProgressHandler);
-					
-					//					fileReference.addEventListener(DataEvent.UPLOAD_COMPLETE_DATA,fileUploadResponseHandler);
-					
-					//test
-					varUploadingMovie.addEventListener(Event.COMPLETE, movieCompleteHandler);
-					varUploadingMovie.addEventListener(DataEvent.UPLOAD_COMPLETE_DATA,movieDataHandler);
-					varUploadingMovie.addEventListener(SecurityErrorEvent.SECURITY_ERROR,securityErrorHandler);
-					varUploadingMovie.addEventListener(HTTPStatusEvent.HTTP_STATUS,httpStatusHandler);
-					varUploadingMovie.addEventListener(IOErrorEvent.IO_ERROR,ioErrorHandler);
-					varUploadingMovie.addEventListener(ProgressEvent.PROGRESS, fileLoadingProgressHandler);
-					//test
-					try
-					{
-						varUploadingMovie.upload(urlRequest);
-					}
-					catch (e:Error)
-					{	
-						//catch upload button clicked again before the uploading finished
-						trace(e.toString());
-					}
-					
-				}
-				else
-				{
-					Alert.show("文件不存在，请重试!");
-				}
-			}
-			
 			public function auth():void
 			{				
 				transition.labInfo.text = "正在验证用户...";
@@ -903,7 +603,6 @@
 			{
 				if (e.result == "Auth Success")
 				{
-					uploadPrepare();
 				}
 				else
 				{
@@ -938,7 +637,7 @@
 	<s:layout>
 		<s:VerticalLayout horizontalAlign="right" paddingLeft="0" paddingRight="0" paddingBottom="0" paddingTop="0" gap="1"/>
 	</s:layout>
-	<s:HGroup gap="1">
+	<s:HGroup includeIn="HUNTER_LOGIN,LOGIN,ORIGINAL,PHOTO,PLAY,RECORD,TRANSITION" gap="1">
 		<mx:Button width="20" height="17"
 				   upSkin="@Embed(source='assets/minimumDefault.png')"
 				   overSkin="@Embed(source='assets/minimumActive.png')"
@@ -957,5 +656,5 @@
 	<components:PlayWindow id="play" varSYSPlayer="{this}" includeIn="PLAY"/>
 	<components:PhotoWindow id="photo" varSYSPlayer="{this}" includeIn="PHOTO"/>
 	<components:TransitionWindow id="transition" varSYSPlayer="{this}" includeIn="HUNTER_LOGIN,TRANSITION" visible.LOGIN="false" includeInLayout.LOGIN="false"/>
-	
+	<components:uploadWindow id="upload" varSYSPlayer="{this}" includeIn="UPLOAD"/>	
 </s:WindowedApplication>

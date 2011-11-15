@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:BorderContainer xmlns:fx="http://ns.adobe.com/mxml/2009"
+				   xmlns:s="library://ns.adobe.com/flex/spark"
+				   xmlns:mx="library://ns.adobe.com/flex/mx"
+				   xmlns:com="com.flashdev.file.*"
+				   width="322" height="281" backgroundColor="#000000" borderVisible="false"
+				   dropShadowVisible="true"
+				   creationComplete="init()">	
+	
+	<s:layout>
+		<s:VerticalLayout
+			horizontalAlign="center"
+			verticalAlign="middle"
+			gap="20"/>
+	</s:layout>
+	<fx:Metadata>
+		[Event(name="controlButton", type="events.ControlEvent")]
+	</fx:Metadata>
+	<fx:Script>
+		<![CDATA[
+			import mx.controls.Alert;
+			import events.ControlEvent;
+			//interactive var
+			[Bindable]
+			public var varSYSPlayer:SYSPlayer;
+			
+			private const _strDomain:String = "http://localhost";
+			[Bindable]
+			private var _strUploadScript:String = new String(_strDomain + "/upload.php");
+			
+			// Initalize
+			private function init():void {
+				//Security.allowDomain(_strDomain);				
+				//_strUploadScript += "?id=" + Application.application.parameters.id + "&key=" + Application.application.parameters.key;
+				// define the type list for the upload
+				//uploader.typeList = [new FileFilter("Image files (*.jpg, *.gif, *.png)", "*.jpg;*.gif;*.png", "JPEG;jp2_;GIFf;PNGf")];
+				uploader.maxSize = 20000000;
+			}
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+
+	<mx:Canvas width="322" height="281" horizontalCenter="1" verticalCenter="1">
+		<com:FileUpload_Demo id="uploader" width="100%" height="100%"
+							 uploadComplete="Alert.show('File(s) have been uploaded.', 'Upload successful')"
+							 uploadIOError="Alert.show('IO Error in uploading file.', 'Error')"
+							 uploadSecurityError="Alert.show('Security Error in uploading file.', 'Error')"
+							 uploadUrl="{_strUploadScript}"
+							 varSYSPlayer = "{this.varSYSPlayer}"/>
+	</mx:Canvas>
+</s:BorderContainer>

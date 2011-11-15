@@ -34,6 +34,11 @@
 			{
 			}
 			
+			protected function btnUpload_clickHandler(event:MouseEvent):void
+			{
+				dispatchEvent(new ControlEvent("controlButton", "btnUpload"));
+			}
+			
 			protected function btnLogin_clickHandler(event:MouseEvent):void
 			{		
 				varInfo = "登录中..."
@@ -101,6 +106,7 @@
 		</s:HGroup>	
 		<s:Label id="labInfo" styleName="commonColor small warningColor" text="{varInfo}"/>
 		<s:Button id="btnLogin" styleName="login" label="新建" click="btnLogin_clickHandler(event)"/>
+		<s:Button id="btnUpload" styleName="login" label="上传" click="btnUpload_clickHandler(event)"/>
 		<s:TextInput id="labIp" borderVisible="false" color="#FFFFFF" contentBackgroundColor="#000000"/>
 	</s:BorderContainer>
 </s:BorderContainer>
