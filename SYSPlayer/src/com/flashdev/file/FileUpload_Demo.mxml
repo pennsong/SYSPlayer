@@ -144,7 +144,7 @@
 			}
 			
 			private function validateFile(fileRef:FileReference):String {
-				var tmpRegex:RegExp = /[A-Za-z0-9\u4e00-\u9fa5]{5,8}_[0-9]{11}_[\u4e00-\u9fa5]{2,5}\.(png|flv)/;
+				var tmpRegex:RegExp = /[A-Za-z0-9]{5,8}_[0-9]{11}_(#[0-9]{1,5}#){2,5}\.(png|flv)/;
 				if (!tmpRegex.test(fileRef.name))
 				{
 					return "not included";

@@ -472,12 +472,23 @@
 				{
 					var png:ByteArray = new PNGEncoder().encode(varPhotoBitmapData);
 					var varTmpDate:Date = new Date();
-					varCurrentPhoto = File.applicationStorageDirectory.resolvePath(varHunterUserName +  "_" + varMobile + "_" + varUserName + ".png");
+					var varUserNameUnicode = convertToUni(varUserName);
+					varCurrentPhoto = File.applicationStorageDirectory.resolvePath(varHunterUserName +  "_" + varMobile + "_" + varUserNameUnicode + ".png");
 					var fs:FileStream = new FileStream();
 					fs.open(varCurrentPhoto, FileMode.WRITE);
 					fs.writeBytes(png);
 					fs.close();
 				}
+			}
+			
+			public function convertToUni(str:String):String
+			{
+				var result:String = "";
+				for (var i=0; i < str.length; i++)
+				{
+					result += "#" + str.charCodeAt(i) + "#";
+				}
+				return result;
 			}
 			
 			private function resetAndLoadMovie():void
