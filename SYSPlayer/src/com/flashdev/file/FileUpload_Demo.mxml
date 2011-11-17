@@ -263,11 +263,11 @@
 					//set upload script url
 					if (varSYSPlayer.login.labIp.text != "")
 					{
-						request.url = "http://" + varSYSPlayer.login.labIp.text + "/upload.php";
+						request.url = "http://" + varSYSPlayer.login.labIp.text + "/eh/index.php/upload";
 					}
 					else
 					{
-				   		request.url = "http://www.channelwin.info/upload.php";
+				   		request.url = "http://www.channelwin.info/eh/index.php/upload";
 					}
 				    request.method = URLRequestMethod.POST;
 				    _refUploadFile = new FileReference();
