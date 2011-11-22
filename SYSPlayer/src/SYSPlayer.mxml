@@ -486,7 +486,7 @@
 				var result:String = "";
 				for (var i=0; i < str.length; i++)
 				{
-					result += "#" + str.charCodeAt(i) + "#";
+					result += "!" + str.charCodeAt(i) + "!";
 				}
 				return result;
 			}
