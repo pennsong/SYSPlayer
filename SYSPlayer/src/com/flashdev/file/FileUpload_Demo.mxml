@@ -316,6 +316,7 @@
 				if (index == -1)
 					index = listFiles.selectedIndex;
 				_arrUploadFiles[index].status = status;
+				trace("penn test:"+status);
 				listFiles.invalidateList();
 			}
 			
