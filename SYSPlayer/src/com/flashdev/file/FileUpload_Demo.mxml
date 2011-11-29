@@ -315,7 +315,7 @@
 			private function updateStatus(status:String, index:int = -1):void {
 				if (index == -1)
 					index = listFiles.selectedIndex;
-				_arrUploadFiles[index].status = status;
+				_arrUploadFiles[index].status = status.substring(status.indexOf("logmsg:", 0) + 7);
 				trace("penn test:"+status);
 				listFiles.invalidateList();
 			}
@@ -362,7 +362,7 @@
 			// Called after data is received from the server after a successful upload
 			private function onUploadCompleteData(event:DataEvent):void {
 				updateStatus(event.data, _numCurrentUpload);
-				if (event.data.indexOf("<success>true</success>") != -1)
+				if (event.data.indexOf("OK") != -1)
 				{
 					var tmpFile:File = new File(File.applicationStorageDirectory.nativePath + File.separator + _refUploadFile.name);
 				//	var tmpFile:File = new File("/Users/penn/Library/Preferences/SYSplayer/Local Store/" + _refUploadFile.name);
