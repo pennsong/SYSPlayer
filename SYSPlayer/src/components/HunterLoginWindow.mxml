@@ -15,11 +15,18 @@
 	<fx:Metadata>
 		[Event(name="controlButton", type="events.ControlEvent")]
 	</fx:Metadata>
+
 	<fx:Script>
 		<![CDATA[
 			import events.ControlEvent;
 			
+			import mx.rpc.events.FaultEvent;
+			import mx.rpc.events.ResultEvent;
 			import mx.validators.StringValidator;
+			
+			[Bindable]
+			private var loginCheckLogin:String;
+			
 			[Bindable]
 			private var varInfo:String;
 			
@@ -29,7 +36,7 @@
 			
 			public function init():void
 			{
-				varInfo = "";
+				varInfo = "";				
 			}
 			
 			public function cleanup():void
@@ -37,47 +44,110 @@
 			}
 			
 			protected function btnHunterLogin_clickHandler(event:MouseEvent):void
-			{		
-				varInfo = "登录中..."
-				var result:String;
-				//login check and return the result
-				result = loginCheck(varSYSPlayer.varHunterUserName, varSYSPlayer.varHunterPassword);
-				switch(result)
-				{
-					case "no network":
-						varInfo = "请检查网络连接!";
-						break;
-					case "format error":
-						varInfo = "用户名或密码格式错误，请重试!";
-						break;
-					default://success
-						varInfo = "";
-						varSYSPlayer.varUserCompany = result;
-						varSYSPlayer.varAuthInfo = "内容授权" + varSYSPlayer.varUserCompany  + ":" + varSYSPlayer.varHunterUserName + "使用";
-						varSYSPlayer.varCurrentMovie = null;
-						dispatchEvent(new ControlEvent("controlButton", "btnHunterLogin"));
-						break;
-				}
-			}
-			
-			private function loginCheck(varHunterUserName:String, varHunterPassword:String):String
 			{
+				varInfo = "登录中...";
+					
 				var tmpRegex:RegExp = /^[A-Za-z0-9]{5,8}$/;
-
- 				if (!tmpRegex.test(varHunterUserName) || !tmpRegex.test(varHunterPassword))
+				
+				if (!tmpRegex.test(varSYSPlayer.varHunterUserName) || !tmpRegex.test(varSYSPlayer.varHunterPassword))
 				{
-					return "format error";
+					varInfo = "用户名或密码格式错误";
+					return;
+				}
+				
+				//check login
+				var fixed:String = "/eh/index.php/upload/checkClientLogin/"+varSYSPlayer.varHunterUserName+"/"+varSYSPlayer.varHunterPassword;
+				if (varSYSPlayer.hunterLogin.labIp.text != "")
+				{
+					loginCheckLogin= "http://" + varSYSPlayer.hunterLogin.labIp.text + fixed;
 				}
 				else
 				{
-					return "HR公司";
-				} 
+					loginCheckLogin = "http://www.channelwin.info" + fixed;
+				}
+				hunterLogin.url = loginCheckLogin;
+				hunterLogin.requestTimeout = 10;
+				hunterLogin.send();	
 			}
+			
+			protected function hunterLogin_resultHandler(event:ResultEvent):void
+			{
+				// TODO Auto-generated method stub
+				var result:String = event.result.toString();
+				if (result.indexOf("logmsg:", 0) == -1)
+				{
+					varInfo = "服务器忙碌中，请重试";
+					trace(result);
+				}
+				else
+				{
+					result = result.substring(result.indexOf("logmsg:", 0) + 7);
+					trace(result);
+					switch(result)
+					{
+						case "OK"://success
+							//update local login file
+							var tmpFile:File =  File.applicationStorageDirectory.resolvePath(varSYSPlayer.varHunterUserName+".login");
+							var fileStream:FileStream = new FileStream();
+							fileStream.open(tmpFile, FileMode.WRITE);
+							fileStream.writeUTF(varSYSPlayer.varHunterPassword);
+							
+							varInfo = "";
+							varSYSPlayer.varUserCompany = result;
+							varSYSPlayer.varAuthInfo = "内容授权" + varSYSPlayer.varUserCompany  + ":" + varSYSPlayer.varHunterUserName + "使用";
+							varSYSPlayer.varCurrentMovie = null;
+							dispatchEvent(new ControlEvent("controlButton", "btnHunterLogin"));
+							break;
+						default:
+							varInfo = result;
+					}
+				}
+			}
+			
+			protected function hunterLogin_faultHandler(event:FaultEvent):void
+			{
+				// TODO Auto-generated method stub
+				trace(event.fault.faultDetail);
+				var tmpFile:File =  File.applicationStorageDirectory.resolvePath(varSYSPlayer.varHunterUserName+".login");
+				if (tmpFile.exists)
+				{
+					var fileStream:FileStream = new FileStream();
+					fileStream.open(tmpFile, FileMode.READ);
+					var tmpStr:String = fileStream.readUTF();
+					if (tmpStr == varSYSPlayer.varHunterPassword)
+					{
+						varInfo = "";
+						varSYSPlayer.varUserCompany = "";
+						varSYSPlayer.varAuthInfo = "内容授权" + varSYSPlayer.varUserCompany  + ":" + varSYSPlayer.varHunterUserName + "使用";
+						varSYSPlayer.varCurrentMovie = null;
+						dispatchEvent(new ControlEvent("controlButton", "btnHunterLogin"));
+					}
+					else
+					{
+						varInfo = "密码错误（如修改过密码请先连接网络更新）";
+					}
+				}
+				else
+				{
+					varInfo = "请连接网络进行认证";
+				}
+			}
+			
 		]]>
 	</fx:Script>
 	
 	<fx:Declarations>
 		<!-- Place non-visual elements (e.g., services, value objects) here -->
+		<s:HTTPService id="hunterLogin" method="POST" result="hunterLogin_resultHandler(event)" fault="hunterLogin_faultHandler(event)">
+			<s:request xmlns="">
+				<name>  
+					{varSYSPlayer.varHunterUserName}  
+				</name>  
+				<pass>  
+					{varSYSPlayer.varHunterPassword}  
+				</pass>  
+			</s:request>
+		</s:HTTPService>
 	</fx:Declarations>
 
 	<s:BorderContainer height="30%" backgroundAlpha="0" borderVisible="false">
