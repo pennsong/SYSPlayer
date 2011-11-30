@@ -305,7 +305,7 @@
 			// Get upload progress
 			private function onUploadProgress(event:ProgressEvent):void {
 				var numPerc:Number = Math.round((event.bytesLoaded / event.bytesTotal) * 100);
-				updateStatus("上传: " + numPerc.toString() + "%");
+				updateStatus("logmsg:上传: " + numPerc.toString() + "%");
 				updateProgBar(numPerc);
 				var evt:ProgressEvent = new ProgressEvent("uploadProgress", false, false, event.bytesLoaded, event.bytesTotal);
 				dispatchEvent(evt);

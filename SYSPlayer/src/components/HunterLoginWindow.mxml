@@ -181,5 +181,5 @@
 		<s:Button id="btnHunterLogin" styleName="login" label="登录" click="btnHunterLogin_clickHandler(event)"/>
 		<s:TextInput id="labIp" borderVisible="false" color="#FFFFFF" contentBackgroundColor="#000000"/>
 	</s:BorderContainer>
-	<s:Label color="#FFFFFF" text="version:1.0.2 cw"/>
+	<s:Label color="#FFFFFF" text="version:1.0.3 cw"/>
 </s:BorderContainer>
