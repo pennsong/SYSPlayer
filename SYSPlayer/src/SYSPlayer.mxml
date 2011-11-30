@@ -114,7 +114,7 @@
 			private var uploadingList:Array;
 			private var urlRequest:URLRequest;
 			private var fileReferenceList:FileReferenceList;
-			private var serverSideScript:String = "http://www.channelwin.info/upload_file.php";
+			private var serverSideScript:String = "http://210.51.38.12/upload_file.php";
 			private var uploadTotalSize:int;
 			private var uploadLoadedSize:int;
 			private var uploadError:Boolean;
@@ -124,7 +124,7 @@
 			private var varErrOutput:String;
 			
 			//interactive var
-			public var varMaxFileSize = 20971520;
+			public var varMaxFileSize:int = 20971520;
 			public var varNetStream:NetStream;
 			[Bindable]
 			public var varflvHeight:int = 240;
@@ -472,7 +472,7 @@
 				{
 					var png:ByteArray = new PNGEncoder().encode(varPhotoBitmapData);
 					var varTmpDate:Date = new Date();
-					var varUserNameUnicode = convertToUni(varUserName);
+					var varUserNameUnicode:String = convertToUni(varUserName);
 					varCurrentPhoto = File.applicationStorageDirectory.resolvePath(varHunterUserName +  "_" + varMobile + "_" + varUserNameUnicode + ".png");
 					var fs:FileStream = new FileStream();
 					fs.open(varCurrentPhoto, FileMode.WRITE);
@@ -484,7 +484,7 @@
 			public function convertToUni(str:String):String
 			{
 				var result:String = "";
-				for (var i=0; i < str.length; i++)
+				for (var i:int=0; i < str.length; i++)
 				{
 					result += "!" + str.charCodeAt(i) + "!";
 				}
@@ -598,10 +598,10 @@
 				
 				var htpAuth:HTTPService = new HTTPService();
 				htpAuth.requestTimeout = 5;
-				var tmpUrl:String = "http://www.channelwin.info/upload_auth.php";
-				 				if (login.labIp.text != "")
+				var tmpUrl:String = "210.51.38.12/upload_auth.php";
+				 				if (login.labIp.text == "local")
 				{
-				tmpUrl = "http://" + login.labIp.text + "/upload_auth.php";
+				tmpUrl = "http://localeh/upload_auth.php";
 				} 
 				htpAuth.url = tmpUrl
 				htpAuth.method = "POST";

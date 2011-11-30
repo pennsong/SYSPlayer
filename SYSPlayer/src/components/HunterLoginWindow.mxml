@@ -57,13 +57,13 @@
 				
 				//check login
 				var fixed:String = "/eh/index.php/upload/checkClientLogin/"+varSYSPlayer.varHunterUserName+"/"+varSYSPlayer.varHunterPassword;
-				if (varSYSPlayer.hunterLogin.labIp.text != "")
+				if (varSYSPlayer.hunterLogin.labIp.text == "local")
 				{
-					loginCheckLogin= "http://" + varSYSPlayer.hunterLogin.labIp.text + fixed;
+					loginCheckLogin= "http://localeh" + fixed;
 				}
 				else
 				{
-					loginCheckLogin = "http://www.channelwin.info" + fixed;
+					loginCheckLogin = "http://210.51.38.12" + fixed;
 				}
 				hunterLogin.url = loginCheckLogin;
 				hunterLogin.requestTimeout = 10;
@@ -181,5 +181,5 @@
 		<s:Button id="btnHunterLogin" styleName="login" label="登录" click="btnHunterLogin_clickHandler(event)"/>
 		<s:TextInput id="labIp" borderVisible="false" color="#FFFFFF" contentBackgroundColor="#000000"/>
 	</s:BorderContainer>
-	<s:Label color="#FFFFFF" text="version:2011/08/21_18:51 cw"/>
+	<s:Label color="#FFFFFF" text="version:1.0.2 cw"/>
 </s:BorderContainer>

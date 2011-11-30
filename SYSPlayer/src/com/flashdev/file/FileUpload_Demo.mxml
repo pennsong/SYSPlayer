@@ -251,7 +251,7 @@
 					disableUI();
 					
 					listFiles.selectedIndex = _numCurrentUpload;
-					updateStatus("Uploading...");
+					updateStatus("上传...");
 					scrollFiles();
 					
 					// Variables to send along with upload
@@ -261,13 +261,13 @@
 					var request:URLRequest = new URLRequest();
 					request.data = sendVars;
 					//set upload script url
-					if (varSYSPlayer.login.labIp.text != "")
+					if (varSYSPlayer.login.labIp.text == "local")
 					{
-						request.url = "http://" + varSYSPlayer.login.labIp.text + "/eh/index.php/upload";
+						request.url = "http://localeh/eh/index.php/upload";
 					}
 					else
 					{
-				   		request.url = "http://www.channelwin.info/eh/index.php/upload";
+				   		request.url = "http://210.51.38.12/eh/index.php/upload";
 					}
 				    request.method = URLRequestMethod.POST;
 				    _refUploadFile = new FileReference();
@@ -305,7 +305,7 @@
 			// Get upload progress
 			private function onUploadProgress(event:ProgressEvent):void {
 				var numPerc:Number = Math.round((event.bytesLoaded / event.bytesTotal) * 100);
-				updateStatus("Uploading: " + numPerc.toString() + "%");
+				updateStatus("上传: " + numPerc.toString() + "%");
 				updateProgBar(numPerc);
 				var evt:ProgressEvent = new ProgressEvent("uploadProgress", false, false, event.bytesLoaded, event.bytesTotal);
 				dispatchEvent(evt);
