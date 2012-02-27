@@ -65,7 +65,14 @@
 					case "登录成功"://success
 						varInfo = "";
 						varSYSPlayer.varUserCompany = '';
-						varSYSPlayer.varAuthInfo = "内容授权" + varSYSPlayer.varUserCompany  + ":" + varSYSPlayer.varUserName + "使用";
+						if (varSYSPlayer.varUserName.indexOf('@') == -1)
+						{
+							varSYSPlayer.varAuthInfo = "仅供" + varSYSPlayer.varUserName + "公司招聘使用";							
+						}
+						else
+						{
+							varSYSPlayer.varAuthInfo = "内容授权" + varSYSPlayer.varUserCompany  + ":" + varSYSPlayer.varUserName + "使用";
+						}
 						varSYSPlayer.varCurrentMovie = null;
 						dispatchEvent(new ControlEvent("controlButton", "btnLogin"));
 						break;
