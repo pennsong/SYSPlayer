@@ -107,7 +107,7 @@
 				varSYSPlayer.varChoseMic.setUseEchoSuppression(true);
 				varSYSPlayer.varChoseMic.soundTransform = new SoundTransform(0,0);
 				varSYSPlayer.varChoseMic.setLoopBack(true);
-				varSYSPlayer.varChoseMic.gain = 50;
+				varSYSPlayer.varChoseMic.gain = 80;
 				varSYSPlayer.varChoseMic.setSilenceLevel(0);
 				pauseRecord();
 				labInfoBig1.text = "录制初始化中...";

@@ -127,7 +127,7 @@
 		<s:Label styleName="warningColor small" text="请您输入&quot;视一视&quot;注册密码"/>
 		<s:Label id="labInfo" styleName="commonColor small warningColor" text="{varInfo}"/>
 		<s:Button id="btnLogin" styleName="login" label="登录" click="btnLogin_clickHandler(event)"/>
-		<s:Label color="#FFFFFF" text="version:2012/03/11_18:01"/>
+		<s:Label color="#FFFFFF" text="version:2012/03/21_16:44"/>
 		<!--<s:TextInput id="labIp" borderVisible="false" color="#FFFFFF" contentBackgroundColor="#000000"/>-->
 	</s:BorderContainer>
 </s:BorderContainer>
