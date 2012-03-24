@@ -20,7 +20,6 @@
 			import events.ControlEvent;
 			
 			import flash.sampler.NewObjectSample;
-			import flash.utils.setTimeout;
 			
 			import flashx.textLayout.formats.FormatValue;
 			
@@ -49,14 +48,6 @@
 			private var varTempSoundFile:File;
 			private var varWavEncoder:WaveEncoder;
 			private var varFinalFlv:File;
-			private var varCurrentVoiceActiveTime:Number;
-			private var varLastVoiceActiveTime:Number;
-			private var varVoiceDelay:int;//in millisecond
-			private var varNoiceTotal:int;
-			private var varNoiceCount:int;
-			private var varNoiceValue:int;
-			private var varNoiceSampleHead:int;
-			private var varNoiceAdjustValue:int;
 			
 			//ffmpeg related
 			private var varExeFile:File;
@@ -75,13 +66,6 @@
 			
 			public function init():void
 			{
-				varNoiceCount = 0;
-				varNoiceTotal = 0;
-				varNoiceValue = 30;
-				varVoiceDelay = 0;
-				varNoiceSampleHead = 20;
-				varCurrentVoiceActiveTime = 0;
-				varNoiceAdjustValue = 2;
 				labInfo.text = "";
 				labInfoBig1.text = "";
 				labAuth.text = varSYSPlayer.varAuthInfo;
@@ -103,80 +87,26 @@
 				//sound related
 				varSoundByteArray  = new ByteArray;
 				varWavByteArray = new ByteArray;
-				varSYSPlayer.varChoseMic.rate = 44;					
+				varSYSPlayer.varChoseMic.rate = 44;
+				varSYSPlayer.varChoseMic.setSilenceLevel(0);					
 				varSYSPlayer.varChoseMic.setUseEchoSuppression(true);
 				varSYSPlayer.varChoseMic.soundTransform = new SoundTransform(0,0);
 				varSYSPlayer.varChoseMic.setLoopBack(true);
-				varSYSPlayer.varChoseMic.gain = 80;
+				varSYSPlayer.varChoseMic.gain = 100;
 				varSYSPlayer.varChoseMic.setSilenceLevel(0);
 				pauseRecord();
-				labInfoBig1.text = "录制初始化中...";
-				labInfoBig2.text = "请保持周围环境安静.";
-				btnRecord.visible = false;
-				btnRecord.includeInLayout = false;
-				labInfoBig3.text = "";
-				cbg.switchRecord(false);
-				cbg.switchStop(false);
-				varSYSPlayer.varChoseMic.addEventListener(SampleDataEvent.SAMPLE_DATA, micSampleDataSampleHandler);
-				setTimeout(getNoiseValue, 5000);
 			}
 			
 			public function cleanup():void
 			{
 				vid.removeChild(varVideo);
 			}
-
-			private function getNoiseValue():void
-			{
-				varSYSPlayer.varChoseMic.removeEventListener(SampleDataEvent.SAMPLE_DATA, micSampleDataSampleHandler);
-				varNoiceValue = varNoiceAdjustValue * varNoiceTotal / (varNoiceCount - varNoiceSampleHead);
-				cbg.switchRecord(true);
-				cbg.switchStop(true);
-				labInfoBig1.text = "暂停中...";
-				labInfoBig2.text = "点击";
-				labInfoBig2.visible = true;
-				labInfoBig2.includeInLayout = true;
-				btnRecord.visible = true;
-				btnRecord.includeInLayout = true;
-				labInfoBig3.text = "开始录制";
-				labInfoBig3.visible = true;
-				labInfoBig3.includeInLayout = true;
-				cbg.switchPause(false);
-				cbg.switchPlay(true);
-				trace("varNoiceValue:" + varNoiceValue);
-			}
 			
-			private function micSampleDataSampleHandler(e:SampleDataEvent):void
-			{
-				if (++varNoiceCount > varNoiceSampleHead)
-				{
-					varNoiceTotal += varSYSPlayer.varChoseMic.activityLevel;
-				}
-
-				trace("varSYSPlayer.varChoseMic.activityLevel:" + varSYSPlayer.varChoseMic.activityLevel);
-			}
-			
-			private function micSampleDataHandler(e:SampleDataEvent):void {	
-				varLastVoiceActiveTime = varCurrentVoiceActiveTime;
-				varCurrentVoiceActiveTime = new Date().getTime();
-				var tmp:int = varSYSPlayer.varChoseMic.activityLevel;
-				trace("" + tmp);
-				var tmpVol:Number = 1;
-				if (varCurrentVoiceActiveTime - varLastVoiceActiveTime > varVoiceDelay)
-				{
-					tmpVol = tmp * tmp / (varNoiceValue * varNoiceValue);
-					if (tmpVol > 2)
-					{
-						tmpVol = 2;
-					}
-				}
-				else
-				{
-					tmpVol = 2;
-				}
+			private function micSampleDataHandler(e:SampleDataEvent):void {			
+				trace(varSYSPlayer.varChoseMic.activityLevel);
 				while (e.data.bytesAvailable) {
 					var sample:Number = e.data.readFloat();
-					varSoundByteArray.writeFloat(sample * tmpVol);
+					varSoundByteArray.writeFloat(sample);
 				}
 			}
 			
@@ -325,7 +255,7 @@
 			
 			private function onOutputData(evt:ProgressEvent):void{
 				varLogOutput +="\n"+varNativeProcess.standardOutput.readUTFBytes(varNativeProcess.standardOutput.bytesAvailable);
-				/* 				var varTempFile:File = File.desktopDirectory.resolvePath("log.txt");
+/* 				var varTempFile:File = File.desktopDirectory.resolvePath("log.txt");
 				var varFs:FileStream = new FileStream();
 				varFs.open(varTempFile,FileMode.WRITE);
 				varFs.writeUTF(varLogOutput);				
@@ -334,7 +264,7 @@
 			
 			private function onErrorData(evt: ProgressEvent):void{
 				varLogOutput +="\n"+varNativeProcess.standardError.readUTFBytes(varNativeProcess.standardError.bytesAvailable);
-				/* 				var varTempFile:File = File.desktopDirectory.resolvePath("log.txt");
+/* 				var varTempFile:File = File.desktopDirectory.resolvePath("log.txt");
 				var varFs:FileStream = new FileStream();
 				varFs.open(varTempFile,FileMode.WRITE);
 				varFs.writeUTF(varLogOutput);	
@@ -437,6 +367,6 @@
 	</s:VGroup>
 	<s:Label id="labAuth" styleName="infoColorBlue small" textAlign="center" width="100%"/>
 	
-	<components:ControlButtonGroup id="cbg"/>
+	<components:ControlButtonGroup id="cbg" width="100%"/>
 	
 </s:BorderContainer>
