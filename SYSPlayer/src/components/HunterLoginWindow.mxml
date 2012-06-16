@@ -56,10 +56,10 @@
 				}
 				
 				//check login
-				var fixed:String = "/eh/index.php/upload/checkClientLogin/"+varSYSPlayer.varHunterUserName+"/"+varSYSPlayer.varHunterPassword;
+				var fixed:String = "/eHR/index.php/upload/checkClientLogin/"+varSYSPlayer.varHunterUserName+"/"+varSYSPlayer.varHunterPassword;
 				if (varSYSPlayer.hunterLogin.labIp.text == "local")
 				{
-					loginCheckLogin= "http://localeh" + fixed;
+					loginCheckLogin= "http://localhost" + fixed;
 				}
 				else
 				{

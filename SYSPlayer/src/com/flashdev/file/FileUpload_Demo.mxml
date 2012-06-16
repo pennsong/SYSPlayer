@@ -263,11 +263,11 @@
 					//set upload script url
 					if (varSYSPlayer.login.labIp.text == "local")
 					{
-						request.url = "http://localeh/eh/index.php/upload";
+						request.url = "http://localhost/eHR/index.php/upload";
 					}
 					else
 					{
-				   		request.url = "http://210.51.38.12/eh/index.php/upload";
+				   		request.url = "http://210.51.38.12/eHR/index.php/upload";
 					}
 				    request.method = URLRequestMethod.POST;
 				    _refUploadFile = new FileReference();
